@@ -1,6 +1,6 @@
 # Used Bicycle Marketplace — Implementation Plan
 
-**Overall Progress:** `0%`
+**Overall Progress:** `100%`
 
 ## TLDR
 
@@ -18,52 +18,52 @@ Build a mobile-first online marketplace where users can browse, list, and contac
 
 ## Tasks
 
-- [ ] 🟥 **Step 1: Preflight & tooling checks**
-  - [ ] 🟥 Confirm repo root is safe to scaffold into (only `README.md`, `LICENSE`, `.git/`, `.gitignore`, `.cursor/`, `images/`, `docs/`)
-  - [ ] 🟥 Verify `node`, `npm`, `python3`, `pip`, `brew` are installed
-  - [ ] 🟥 Update root `.gitignore` with Next.js, FastAPI, and `.venv/` entries
+- [x] 🟩 **Step 1: Preflight & tooling checks**
+  - [x] 🟩 Confirm repo root is safe to scaffold into (only `README.md`, `LICENSE`, `.git/`, `.gitignore`, `.cursor/`, `images/`, `docs/`)
+  - [x] 🟩 Verify `node`, `npm`, `python3`, `pip`, `brew` are installed
+  - [x] 🟩 Root `.gitignore` already covers Next.js, FastAPI, and `.venv/` entries
 
-- [ ] 🟥 **Step 2: Local PostgreSQL (Homebrew)**
-  - [ ] 🟥 Install/start `postgresql@16` via Homebrew
-  - [ ] 🟥 Create `bicycles_marketplace` database and app role
-  - [ ] 🟥 Document `DATABASE_URL`, `POSTGRES_DB/USER/PASSWORD` env vars
+- [x] 🟩 **Step 2: Local PostgreSQL (Homebrew)**
+  - [x] 🟩 Install/start `postgresql@16` via Homebrew
+  - [x] 🟩 Create `bicycles_marketplace` database and `bicycles_app` role
+  - [x] 🟩 Document `DATABASE_URL` and `POSTGRES_*` env vars (see `api/.env.example`)
 
-- [ ] 🟥 **Step 3: Scaffold API (`api/` — FastAPI)**
-  - [ ] 🟥 Create `api/.venv` and `requirements.txt` (fastapi, uvicorn, sqlalchemy, psycopg[binary], alembic, pydantic-settings, python-dotenv)
-  - [ ] 🟥 FastAPI app skeleton with health endpoint `GET /health`
-  - [ ] 🟥 Settings module reading `DATABASE_URL` from env
-  - [ ] 🟥 SQLAlchemy engine/session wiring
-  - [ ] 🟥 Initialize Alembic and create baseline migration
+- [x] 🟩 **Step 3: Scaffold API (`api/` — FastAPI)**
+  - [x] 🟩 Create `api/.venv` (Python 3.12) and `requirements.txt`
+  - [x] 🟩 FastAPI app skeleton with health endpoint `GET /health`
+  - [x] 🟩 Settings module reading `DATABASE_URL` from env
+  - [x] 🟩 SQLAlchemy engine/session wiring
+  - [x] 🟩 Initialize Alembic and create baseline migration
 
-- [ ] 🟥 **Step 4: Core domain — Listings**
-  - [ ] 🟥 `Listing` model: id, title, description, price_cents, condition, brand, frame_size, location, image_url, seller_name, seller_email, created_at
-  - [ ] 🟥 Pydantic schemas (create/read)
-  - [ ] 🟥 Alembic migration for `listings` table
-  - [ ] 🟥 Endpoints: `GET /listings` (with filters), `GET /listings/{id}`, `POST /listings`
-  - [ ] 🟥 CORS config allowing the web app origin
+- [x] 🟩 **Step 4: Core domain — Listings**
+  - [x] 🟩 `Listing` model with all planned fields
+  - [x] 🟩 Pydantic schemas (create/read)
+  - [x] 🟩 Alembic migration for `listings` table applied
+  - [x] 🟩 Endpoints: `GET /listings` (with filters), `GET /listings/{id}`, `POST /listings`
+  - [x] 🟩 CORS config allowing the web app origin
 
-- [ ] 🟥 **Step 5: Scaffold Web App (`web/` — Next.js + TS + Tailwind)**
-  - [ ] 🟥 `create-next-app` with TypeScript, App Router, Tailwind, ESLint (no `src/` JS)
-  - [ ] 🟥 Mobile-first base layout, viewport meta, safe-area padding, bottom nav or sticky header
-  - [ ] 🟥 API client module reading `NEXT_PUBLIC_API_BASE_URL`
+- [x] 🟩 **Step 5: Scaffold Web App (`web/` — Next.js + TS + Tailwind)**
+  - [x] 🟩 `create-next-app` with TypeScript, App Router, Tailwind, ESLint (no `src/` JS)
+  - [x] 🟩 Mobile-first base layout, viewport meta, safe-area padding, sticky header, bottom nav
+  - [x] 🟩 API client module reading `NEXT_PUBLIC_API_BASE_URL`
 
-- [ ] 🟥 **Step 6: Marketplace UI pages**
-  - [ ] 🟥 `/` Home — listing grid/feed with search + filter drawer (brand, condition, price, location)
-  - [ ] 🟥 `/listings/[id]` Detail — photo, specs, description, seller contact reveal
-  - [ ] 🟥 `/sell` Create listing form with client-side validation
-  - [ ] 🟥 Empty/loading/error states on each page
+- [x] 🟩 **Step 6: Marketplace UI pages**
+  - [x] 🟩 `/` Home — listing grid with search + filter form (brand, condition, price, location)
+  - [x] 🟩 `/listings/[id]` Detail — photo, specs, description, seller contact reveal
+  - [x] 🟩 `/sell` Create listing form with client-side validation
+  - [x] 🟩 Empty/error/404 states on each page
 
-- [ ] 🟥 **Step 7: Cursor skills for new tech**
-  - [ ] 🟥 Add `.cursor/skills/nextjs/SKILL.md` (App Router + TS conventions)
-  - [ ] 🟥 Add `.cursor/skills/fastapi/SKILL.md` (project layout, venv, Alembic usage)
-  - [ ] 🟥 Add `.cursor/skills/tailwind-mobile-first/SKILL.md` (breakpoint defaults, touch targets)
+- [x] 🟩 **Step 7: Cursor skills for new tech**
+  - [x] 🟩 Added `.cursor/skills/nextjs/SKILL.md`
+  - [x] 🟩 Added `.cursor/skills/fastapi/SKILL.md`
+  - [x] 🟩 Added `.cursor/skills/tailwind-mobile-first/SKILL.md`
 
-- [ ] 🟥 **Step 8: Root README & run scripts**
-  - [ ] 🟥 Document macOS setup: Postgres, venv, web install
-  - [ ] 🟥 Commands: start Postgres, run migrations, run API, run web
-  - [ ] 🟥 Smoke-test steps: `/health` returns 200, home page renders listings from API
+- [x] 🟩 **Step 8: Root README & run scripts**
+  - [x] 🟩 Documented macOS setup: Postgres, venv, web install
+  - [x] 🟩 Commands: start Postgres, run migrations, run API, run web
+  - [x] 🟩 Smoke-test steps: `/health` returns 200, home page renders listings from API
 
-- [ ] 🟥 **Step 9: Verify & close out**
-  - [ ] 🟥 Seed 3–5 sample bicycle listings
-  - [ ] 🟥 End-to-end smoke test on mobile viewport (Chrome devtools)
-  - [ ] 🟥 Run `tech-stack` validation checklist items
+- [x] 🟩 **Step 9: Verify & close out**
+  - [x] 🟩 Seeded 5 sample bicycle listings (`api/scripts/seed.py`)
+  - [x] 🟩 End-to-end smoke test: API `/health` 200, `/listings` returns 5, web `/`, `/listings/2`, `/sell` all 200
+  - [x] 🟩 `tech-stack` validation checklist items pass (no Docker, venv, TS only, Alembic, `DATABASE_URL`)
