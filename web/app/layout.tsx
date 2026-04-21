@@ -14,15 +14,16 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Skillful Cycles — Used Bicycle Marketplace",
-  description: "Buy and sell used bicycles in your area.",
+  title: "Hamstr — soft landings for small lives",
+  description:
+    "A gentle, story-driven marketplace for rehoming hamsters with care.",
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#059669",
+  themeColor: "#1f6e6a",
 };
 
 export default function RootLayout({
@@ -37,13 +38,13 @@ export default function RootLayout({
         <header className="sticky top-0 z-10 border-b border-[color:var(--border)] bg-[color:var(--surface)]/90 backdrop-blur">
           <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-4">
             <Link href="/" className="text-lg font-semibold tracking-tight">
-              Skillful<span className="text-[color:var(--accent)]">Cycles</span>
+              ham<span className="text-[color:var(--accent)]">str</span>
             </Link>
             <Link
-              href="/sell"
+              href="/rehome"
               className="rounded-full bg-[color:var(--accent)] px-4 py-1.5 text-sm font-medium text-white shadow-sm active:scale-95"
             >
-              Sell
+              Rehome
             </Link>
           </div>
         </header>
@@ -59,10 +60,10 @@ export default function RootLayout({
               Browse
             </Link>
             <Link
-              href="/sell"
+              href="/rehome"
               className="py-3 font-medium text-[color:var(--accent)]"
             >
-              Post a bike
+              Rehome
             </Link>
           </div>
         </nav>

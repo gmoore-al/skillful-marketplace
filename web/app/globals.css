@@ -1,12 +1,29 @@
 @import "tailwindcss";
 
+/* Hamstr palette — pulled from the logo:
+ *   teal     #1f6e6a   (h)
+ *   peach    #f6b39a   (a)
+ *   mustard  #f3dc6e   (m)
+ *   pink     #f6c4c1   (s)
+ *   coral    #f08c70   (t)
+ *   rose     #e76e70   (r)
+ *   cream    #fbf6ee   (page background)
+ *   ink      #1f2421   (body text)
+ */
 :root {
-  --background: #fafaf9;
-  --foreground: #18181b;
-  --accent: #059669;
-  --muted: #71717a;
+  --background: #fbf6ee;
+  --foreground: #1f2421;
+  --accent: #1f6e6a;
+  --muted: #6b7370;
   --surface: #ffffff;
-  --border: #e4e4e7;
+  --border: #ece6d8;
+
+  --color-teal: #1f6e6a;
+  --color-peach: #f6b39a;
+  --color-mustard: #f3dc6e;
+  --color-pink: #f6c4c1;
+  --color-coral: #f08c70;
+  --color-rose: #e76e70;
 }
 
 @theme inline {
@@ -22,12 +39,12 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #f4f4f5;
-    --accent: #10b981;
-    --muted: #a1a1aa;
-    --surface: #171717;
-    --border: #27272a;
+    --background: #14191a;
+    --foreground: #f3eee2;
+    --accent: #4fb6af;
+    --muted: #a0a8a4;
+    --surface: #1c2222;
+    --border: #2a3231;
   }
 }
 

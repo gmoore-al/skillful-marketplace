@@ -1,60 +1,75 @@
 /**
- * Thin fetch wrapper around the FastAPI backend.
+ * Thin fetch wrapper around the Hamstr FastAPI backend.
  *
  * All functions throw on non-2xx responses so callers can surface errors
  * via standard try/catch or React error boundaries.
  */
 
-export type Condition =
-  | "new"
-  | "like_new"
-  | "good"
-  | "fair"
-  | "parts_only";
+export type Species =
+  | "syrian"
+  | "dwarf_winter_white"
+  | "dwarf_campbell"
+  | "roborovski"
+  | "chinese"
+  | "other";
 
-export const CONDITIONS: { value: Condition; label: string }[] = [
-  { value: "new", label: "New" },
-  { value: "like_new", label: "Like new" },
-  { value: "good", label: "Good" },
-  { value: "fair", label: "Fair" },
-  { value: "parts_only", label: "Parts only" },
+export const SPECIES: { value: Species; label: string }[] = [
+  { value: "syrian", label: "Syrian" },
+  { value: "dwarf_winter_white", label: "Dwarf — Winter White" },
+  { value: "dwarf_campbell", label: "Dwarf — Campbell" },
+  { value: "roborovski", label: "Roborovski" },
+  { value: "chinese", label: "Chinese" },
+  { value: "other", label: "Other" },
 ];
 
-export interface Listing {
+export type Gender = "female" | "male" | "unknown";
+
+export const GENDERS: { value: Gender; label: string }[] = [
+  { value: "female", label: "Female" },
+  { value: "male", label: "Male" },
+  { value: "unknown", label: "Unknown" },
+];
+
+export interface Hamster {
   id: number;
-  title: string;
-  description: string;
-  price_cents: number;
-  condition: Condition;
-  brand: string;
-  frame_size: string;
+  name: string;
+  species: Species;
+  age_months: number;
+  gender: Gender;
+  color: string;
+  temperament: string;
+  story: string;
+  includes: string;
+  adoption_fee_cents: number;
   location: string;
-  image_url: string;
-  seller_name: string;
-  seller_email: string;
+  photo_url: string;
+  current_human_name: string;
+  current_human_email: string;
   created_at: string;
 }
 
-export interface ListingCreate {
-  title: string;
-  description: string;
-  price_cents: number;
-  condition: Condition;
-  brand: string;
-  frame_size: string;
+export interface HamsterCreate {
+  name: string;
+  species: Species;
+  age_months: number;
+  gender: Gender;
+  color: string;
+  temperament: string;
+  story: string;
+  includes: string;
+  adoption_fee_cents: number;
   location: string;
-  image_url: string;
-  seller_name: string;
-  seller_email: string;
+  photo_url: string;
+  current_human_name: string;
+  current_human_email: string;
 }
 
-export interface ListingFilters {
+export interface HamsterFilters {
   q?: string;
-  brand?: string;
-  condition?: Condition;
+  species?: Species;
+  gender?: Gender;
   location?: string;
-  min_price_cents?: number;
-  max_price_cents?: number;
+  max_fee_cents?: number;
 }
 
 const API_BASE =
@@ -82,47 +97,67 @@ async function handle<T>(res: Response): Promise<T> {
   return (await res.json()) as T;
 }
 
-/** Fetch listings from the API, honoring the given filters. */
-export async function fetchListings(
-  filters: ListingFilters = {},
+/** Fetch hamsters from the API, honoring the given filters. */
+export async function fetchHamsters(
+  filters: HamsterFilters = {},
   init?: RequestInit,
-): Promise<Listing[]> {
-  const res = await fetch(`${API_BASE}/listings${toQuery({ ...filters })}`, {
+): Promise<Hamster[]> {
+  const res = await fetch(`${API_BASE}/hamsters${toQuery({ ...filters })}`, {
     cache: "no-store",
     ...init,
   });
-  return handle<Listing[]>(res);
+  return handle<Hamster[]>(res);
 }
 
-/** Fetch a single listing by id. */
-export async function fetchListing(
+/** Fetch a single hamster by id. */
+export async function fetchHamster(
   id: number,
   init?: RequestInit,
-): Promise<Listing> {
-  const res = await fetch(`${API_BASE}/listings/${id}`, {
+): Promise<Hamster> {
+  const res = await fetch(`${API_BASE}/hamsters/${id}`, {
     cache: "no-store",
     ...init,
   });
-  return handle<Listing>(res);
+  return handle<Hamster>(res);
 }
 
-/** Create a new listing. */
-export async function createListing(
-  payload: ListingCreate,
-): Promise<Listing> {
-  const res = await fetch(`${API_BASE}/listings`, {
+/** Create a new hamster listing. */
+export async function createHamster(
+  payload: HamsterCreate,
+): Promise<Hamster> {
+  const res = await fetch(`${API_BASE}/hamsters`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
-  return handle<Listing>(res);
+  return handle<Hamster>(res);
 }
 
-/** Format an integer cent amount as a localized USD price string. */
-export function formatPrice(cents: number): string {
+/**
+ * Format an adoption fee. Zero is shown as "Free to a good home" rather
+ * than "$0", because the framing matters here.
+ */
+export function formatFee(cents: number): string {
+  if (!cents) return "Free to a good home";
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
     maximumFractionDigits: 0,
   }).format(cents / 100);
+}
+
+/**
+ * Format an age in months as a human-readable phrase, e.g.
+ * "4 months · pup", "1.5 years", "3 years · senior".
+ */
+export function formatAge(months: number): string {
+  if (months <= 0) return "Newborn";
+  if (months < 12) {
+    const tag = months <= 4 ? " · pup" : "";
+    return `${months} month${months === 1 ? "" : "s"}${tag}`;
+  }
+  const years = months / 12;
+  const senior = months >= 24 ? " · senior" : "";
+  const pretty = Number.isInteger(years) ? `${years}` : years.toFixed(1);
+  return `${pretty} year${years === 1 ? "" : "s"}${senior}`;
 }

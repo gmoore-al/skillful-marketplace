@@ -1,4 +1,4 @@
-"""FastAPI application entrypoint for the bicycles marketplace."""
+"""FastAPI application entrypoint for the Hamstr rehoming marketplace."""
 
 from __future__ import annotations
 
@@ -6,14 +6,14 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .config import get_settings
-from .routers import listings
+from .routers import hamsters
 
 settings = get_settings()
 
 app = FastAPI(
-    title="Skillful Bicycles Marketplace API",
+    title="Hamstr API",
     version="0.1.0",
-    description="Used bicycle marketplace service.",
+    description="A gentle marketplace for rehoming hamsters with care.",
 )
 
 app.add_middleware(
@@ -24,7 +24,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(listings.router)
+app.include_router(hamsters.router)
 
 
 @app.get("/health", tags=["meta"])

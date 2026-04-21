@@ -8,42 +8,54 @@ from enum import Enum
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 
-class Condition(str, Enum):
-    """Allowed bicycle condition values."""
+class Species(str, Enum):
+    """Common pet hamster species. ``OTHER`` covers anything not listed."""
 
-    NEW = "new"
-    LIKE_NEW = "like_new"
-    GOOD = "good"
-    FAIR = "fair"
-    PARTS_ONLY = "parts_only"
+    SYRIAN = "syrian"
+    DWARF_WINTER_WHITE = "dwarf_winter_white"
+    DWARF_CAMPBELL = "dwarf_campbell"
+    ROBOROVSKI = "roborovski"
+    CHINESE = "chinese"
+    OTHER = "other"
 
 
-class ListingBase(BaseModel):
+class Gender(str, Enum):
+    """Hamster gender; ``UNKNOWN`` is allowed for cases where it isn't known."""
+
+    FEMALE = "female"
+    MALE = "male"
+    UNKNOWN = "unknown"
+
+
+class HamsterBase(BaseModel):
     """Fields shared between create and read schemas."""
 
-    title: str = Field(min_length=3, max_length=140)
-    description: str = Field(default="", max_length=5000)
-    price_cents: int = Field(ge=0, le=10_000_000)
-    condition: Condition
-    brand: str = Field(default="", max_length=64)
-    frame_size: str = Field(default="", max_length=32)
+    name: str = Field(min_length=1, max_length=80)
+    species: Species
+    age_months: int = Field(ge=0, le=60, default=0)
+    gender: Gender = Gender.UNKNOWN
+    color: str = Field(default="", max_length=64)
+    temperament: str = Field(default="", max_length=120)
+    story: str = Field(default="", max_length=5000)
+    includes: str = Field(default="", max_length=2000)
+    adoption_fee_cents: int = Field(ge=0, le=10_000_000, default=0)
     location: str = Field(default="", max_length=120)
-    image_url: str = Field(default="", max_length=500)
+    photo_url: str = Field(default="", max_length=500)
 
 
-class ListingCreate(ListingBase):
-    """Payload accepted by ``POST /listings``."""
+class HamsterCreate(HamsterBase):
+    """Payload accepted by ``POST /hamsters``."""
 
-    seller_name: str = Field(min_length=1, max_length=120)
-    seller_email: EmailStr
+    current_human_name: str = Field(min_length=1, max_length=120)
+    current_human_email: EmailStr
 
 
-class ListingRead(ListingBase):
-    """Representation returned from listing endpoints."""
+class HamsterRead(HamsterBase):
+    """Representation returned from hamster endpoints."""
 
     id: int
-    seller_name: str
-    seller_email: EmailStr
+    current_human_name: str
+    current_human_email: EmailStr
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)

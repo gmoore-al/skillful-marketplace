@@ -1,37 +1,37 @@
 # Skillful Marketplace
 
-This repo is a starter pack for a non-engineer, who wants to use cursor to build a full-stack application, e.g. a marketplace app.
+This repo is a starter pack for a non-engineer who wants to use Cursor to build a full-stack application, e.g. a marketplace app.
 
 ## Getting Started
 
 ![Fork this repo](images/fork-me.png)
 
-0. Install git & install cursor
+0. Install git & install Cursor
 
-1. Fork this repo (↗️) to your own github
+1. Fork this repo (↗️) to your own GitHub
 
 2. From your own repo, copy the Clone URL (↗️)
 
-3. Open a terminal (on mac: Cmd + Space and type 'Terminal') and run:
+3. Open a terminal (on Mac: Cmd + Space and type 'Terminal') and run:
 ```bash
 mkdir ~/Dev
 cd ~/Dev
 git clone <url>
 ```
 
-4. Open cursor and open the repo (File -> Open Folder)
+4. Open Cursor and open the repo (File → Open Folder)
 
 5. Try out your first cursor command! In the chat type "/" then start to type the word t.e.a.c.h, press enter to get the command `teach-me`, then ask any question that comes to mind. Example:
     - `/teach-me what are the cursor commands in this repo?`
 
-5. Build! example:
-    - `/plan I want to build a beautiful marketplace to sell my <really cool t-shirts|hamsters|artwork|surf boards|shoes and/or AI data infrastructure`
+6. Build! Example:
+    - `/plan I want to build a beautiful marketplace to sell my <really cool t-shirts|hamsters|artwork|surf boards|shoes and/or AI data infrastructure>`
 
 ---
 
-## Running the Used Bicycle Marketplace
+## Running Hamstr
 
-This repo currently contains a mobile-first used bicycle marketplace:
+This repo currently contains **Hamstr**, a gentle, story-driven marketplace for rehoming hamsters.
 
 - `web/` — Next.js App Router + TypeScript + Tailwind
 - `api/` — Python FastAPI + SQLAlchemy + Alembic
@@ -46,9 +46,9 @@ brew services start postgresql@16
 
 # Database + app role
 psql postgres <<'SQL'
-CREATE ROLE bicycles_app WITH LOGIN PASSWORD 'bicycles_app';
-CREATE DATABASE bicycles_marketplace OWNER bicycles_app;
-GRANT ALL PRIVILEGES ON DATABASE bicycles_marketplace TO bicycles_app;
+CREATE ROLE hamstr_app WITH LOGIN PASSWORD 'hamstr_app';
+CREATE DATABASE hamstr_marketplace OWNER hamstr_app;
+GRANT ALL PRIVILEGES ON DATABASE hamstr_marketplace TO hamstr_app;
 SQL
 
 # API: venv + deps + migrations + sample data
@@ -65,9 +65,13 @@ cd ..
 # Web: deps
 cd web
 npm install
-cp .env.example .env.local
+cp .env.example .env.local 2>/dev/null || true
 cd ..
 ```
+
+> **Migrating from the old `bicycles_marketplace` DB?** Drop it with
+> `dropdb bicycles_marketplace && dropuser bicycles_app` (or skip — it
+> just sits unused) before running the `psql` block above.
 
 ### 2. Run locally (two terminals)
 
@@ -89,9 +93,9 @@ npm run dev
 ### 3. Smoke test
 
 ```bash
-curl http://127.0.0.1:8000/health            # -> {"status":"ok"}
-curl http://127.0.0.1:8000/listings | head   # -> JSON array of listings
-open http://localhost:3000                   # home page should render the seeded listings
+curl http://127.0.0.1:8000/health             # -> {"status":"ok"}
+curl http://127.0.0.1:8000/hamsters | head    # -> JSON array of hamsters
+open http://localhost:3000                    # home page should render the seeded hamsters
 ```
 
 ### Environment variables

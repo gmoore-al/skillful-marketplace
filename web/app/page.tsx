@@ -1,11 +1,13 @@
 import Link from "next/link";
-import { ListingCard } from "@/components/ListingCard";
+import { HamsterCard } from "@/components/HamsterCard";
 import {
-  CONDITIONS,
-  Condition,
-  Listing,
-  ListingFilters,
-  fetchListings,
+  GENDERS,
+  Gender,
+  Hamster,
+  HamsterFilters,
+  SPECIES,
+  Species,
+  fetchHamsters,
 } from "@/lib/api";
 
 type SearchParams = Record<string, string | string[] | undefined>;
@@ -15,30 +17,33 @@ function firstString(value: string | string[] | undefined): string | undefined {
   return value;
 }
 
-function parseFilters(params: SearchParams): ListingFilters {
-  const priceToCents = (dollars?: string): number | undefined => {
+function parseFilters(params: SearchParams): HamsterFilters {
+  const feeToCents = (dollars?: string): number | undefined => {
     if (!dollars) return undefined;
     const n = Number(dollars);
     if (Number.isNaN(n) || n < 0) return undefined;
     return Math.round(n * 100);
   };
 
-  const condition = firstString(params.condition);
+  const species = firstString(params.species);
+  const gender = firstString(params.gender);
   return {
     q: firstString(params.q) || undefined,
-    brand: firstString(params.brand) || undefined,
     location: firstString(params.location) || undefined,
-    condition:
-      condition && CONDITIONS.some((c) => c.value === condition)
-        ? (condition as Condition)
+    species:
+      species && SPECIES.some((s) => s.value === species)
+        ? (species as Species)
         : undefined,
-    min_price_cents: priceToCents(firstString(params.min_price)),
-    max_price_cents: priceToCents(firstString(params.max_price)),
+    gender:
+      gender && GENDERS.some((g) => g.value === gender)
+        ? (gender as Gender)
+        : undefined,
+    max_fee_cents: feeToCents(firstString(params.max_fee)),
   };
 }
 
 /**
- * Home feed: search + filter form, followed by a responsive listing grid.
+ * Home feed: search + filter form, followed by a responsive hamster grid.
  *
  * Server-rendered to keep the initial payload small and SEO-friendly.
  */
@@ -50,26 +55,26 @@ export default async function HomePage({
   const params = await searchParams;
   const filters = parseFilters(params);
 
-  let listings: Listing[] = [];
+  let hamsters: Hamster[] = [];
   let error: string | null = null;
   try {
-    listings = await fetchListings(filters);
+    hamsters = await fetchHamsters(filters);
   } catch (err) {
-    error = err instanceof Error ? err.message : "Failed to load listings";
+    error = err instanceof Error ? err.message : "Failed to load hamsters";
   }
 
-  const activeConditions = new Set<Condition | "">(
-    filters.condition ? [filters.condition] : [""],
+  const activeSpecies = new Set<Species | "">(
+    filters.species ? [filters.species] : [""],
   );
 
   return (
     <div className="flex flex-col gap-4">
       <section>
-        <h1 className="text-2xl font-bold tracking-tight">Used bicycles</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Hamsters looking for a home</h1>
         <p className="text-sm text-[color:var(--muted)]">
-          Browse bikes near you or{" "}
-          <Link href="/sell" className="text-[color:var(--accent)] underline">
-            post your own
+          Every listing comes with a full story.{" "}
+          <Link href="/rehome" className="text-[color:var(--accent)] underline">
+            Rehome yours
           </Link>
           .
         </p>
@@ -84,16 +89,10 @@ export default async function HomePage({
           type="search"
           name="q"
           defaultValue={filters.q ?? ""}
-          placeholder="Search titles (e.g. Trek, gravel, kids)"
+          placeholder="Search by name (e.g. Beatrice, Mochi)"
           className="w-full rounded-lg border border-[color:var(--border)] bg-transparent px-3 py-2 text-base"
         />
         <div className="grid grid-cols-2 gap-2">
-          <input
-            name="brand"
-            defaultValue={filters.brand ?? ""}
-            placeholder="Brand"
-            className="rounded-lg border border-[color:var(--border)] bg-transparent px-3 py-2 text-base"
-          />
           <input
             name="location"
             defaultValue={filters.location ?? ""}
@@ -101,46 +100,44 @@ export default async function HomePage({
             className="rounded-lg border border-[color:var(--border)] bg-transparent px-3 py-2 text-base"
           />
           <input
-            name="min_price"
+            name="max_fee"
             type="number"
             inputMode="numeric"
             min={0}
             defaultValue={
-              filters.min_price_cents !== undefined
-                ? String(filters.min_price_cents / 100)
+              filters.max_fee_cents !== undefined
+                ? String(filters.max_fee_cents / 100)
                 : ""
             }
-            placeholder="Min $"
-            className="rounded-lg border border-[color:var(--border)] bg-transparent px-3 py-2 text-base"
-          />
-          <input
-            name="max_price"
-            type="number"
-            inputMode="numeric"
-            min={0}
-            defaultValue={
-              filters.max_price_cents !== undefined
-                ? String(filters.max_price_cents / 100)
-                : ""
-            }
-            placeholder="Max $"
+            placeholder="Max fee $"
             className="rounded-lg border border-[color:var(--border)] bg-transparent px-3 py-2 text-base"
           />
         </div>
         <div className="flex flex-wrap gap-1.5">
-          <ConditionChip
-            label="Any"
-            name="condition"
+          <Chip
+            label="Any species"
+            name="species"
             value=""
-            active={activeConditions.has("")}
+            active={activeSpecies.has("")}
           />
-          {CONDITIONS.map((c) => (
-            <ConditionChip
-              key={c.value}
-              label={c.label}
-              name="condition"
-              value={c.value}
-              active={activeConditions.has(c.value)}
+          {SPECIES.map((s) => (
+            <Chip
+              key={s.value}
+              label={s.label}
+              name="species"
+              value={s.value}
+              active={activeSpecies.has(s.value)}
+            />
+          ))}
+        </div>
+        <div className="flex flex-wrap gap-1.5">
+          {GENDERS.map((g) => (
+            <Chip
+              key={g.value}
+              label={g.label}
+              name="gender"
+              value={g.value}
+              active={filters.gender === g.value}
             />
           ))}
         </div>
@@ -164,22 +161,22 @@ export default async function HomePage({
         <div className="rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-950/40 dark:text-red-300">
           {error}
         </div>
-      ) : listings.length === 0 ? (
+      ) : hamsters.length === 0 ? (
         <div className="rounded-xl border border-dashed border-[color:var(--border)] p-8 text-center text-sm text-[color:var(--muted)]">
-          No listings match your filters. Try widening your search or{" "}
+          No hamsters here yet. Maybe yours is the first?{" "}
           <Link
-            href="/sell"
+            href="/rehome"
             className="text-[color:var(--accent)] underline"
           >
-            post the first one
+            Rehome one
           </Link>
           .
         </div>
       ) : (
         <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          {listings.map((listing) => (
-            <li key={listing.id}>
-              <ListingCard listing={listing} />
+          {hamsters.map((hamster) => (
+            <li key={hamster.id}>
+              <HamsterCard hamster={hamster} />
             </li>
           ))}
         </ul>
@@ -188,7 +185,7 @@ export default async function HomePage({
   );
 }
 
-function ConditionChip({
+function Chip({
   label,
   name,
   value,

@@ -1,4 +1,4 @@
-"""ORM models for the marketplace domain."""
+"""ORM models for the Hamstr rehoming marketplace."""
 
 from __future__ import annotations
 
@@ -10,26 +10,30 @@ from sqlalchemy.orm import Mapped, mapped_column
 from .database import Base
 
 
-class Listing(Base):
-    """A used bicycle offered for sale by a seller.
+class Hamster(Base):
+    """A hamster being rehomed by their current human.
 
-    Prices are stored as integer cents to avoid floating-point rounding.
-    Images are referenced by URL; the v1 API does not host uploads itself.
+    Adoption fees are stored as integer cents (a fee of 0 means
+    "free to a good home"). Photos are referenced by URL; the v1 API
+    does not host uploads itself.
     """
 
-    __tablename__ = "listings"
+    __tablename__ = "hamsters"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    title: Mapped[str] = mapped_column(String(140), nullable=False)
-    description: Mapped[str] = mapped_column(Text, nullable=False, default="")
-    price_cents: Mapped[int] = mapped_column(Integer, nullable=False)
-    condition: Mapped[str] = mapped_column(String(32), nullable=False)
-    brand: Mapped[str] = mapped_column(String(64), nullable=False, default="")
-    frame_size: Mapped[str] = mapped_column(String(32), nullable=False, default="")
+    name: Mapped[str] = mapped_column(String(80), nullable=False)
+    species: Mapped[str] = mapped_column(String(32), nullable=False)
+    age_months: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    gender: Mapped[str] = mapped_column(String(16), nullable=False, default="unknown")
+    color: Mapped[str] = mapped_column(String(64), nullable=False, default="")
+    temperament: Mapped[str] = mapped_column(String(120), nullable=False, default="")
+    story: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    includes: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    adoption_fee_cents: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     location: Mapped[str] = mapped_column(String(120), nullable=False, default="")
-    image_url: Mapped[str] = mapped_column(String(500), nullable=False, default="")
-    seller_name: Mapped[str] = mapped_column(String(120), nullable=False)
-    seller_email: Mapped[str] = mapped_column(String(254), nullable=False)
+    photo_url: Mapped[str] = mapped_column(String(500), nullable=False, default="")
+    current_human_name: Mapped[str] = mapped_column(String(120), nullable=False)
+    current_human_email: Mapped[str] = mapped_column(String(254), nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),

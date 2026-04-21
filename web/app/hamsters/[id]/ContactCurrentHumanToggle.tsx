@@ -3,9 +3,16 @@
 import { useState } from "react";
 
 /**
- * Reveals the seller email on click so scrapers get a little less of a free ride.
+ * Reveals the current human's email on click so scrapers get a little less
+ * of a free ride.
  */
-export function ContactSellerToggle({ email }: { email: string }) {
+export function ContactCurrentHumanToggle({
+  email,
+  hamsterName,
+}: {
+  email: string;
+  hamsterName: string;
+}) {
   const [revealed, setRevealed] = useState(false);
 
   if (!revealed) {
@@ -15,7 +22,7 @@ export function ContactSellerToggle({ email }: { email: string }) {
         onClick={() => setRevealed(true)}
         className="mt-2 w-full rounded-lg bg-[color:var(--accent)] px-4 py-2 text-sm font-medium text-white active:scale-[0.99]"
       >
-        Contact seller
+        I&rsquo;d like to meet {hamsterName}
       </button>
     );
   }
@@ -23,7 +30,7 @@ export function ContactSellerToggle({ email }: { email: string }) {
   return (
     <a
       href={`mailto:${email}?subject=${encodeURIComponent(
-        "Interested in your bike on Skillful Cycles",
+        `About ${hamsterName} on Hamstr`,
       )}`}
       className="mt-2 block w-full break-all rounded-lg border border-[color:var(--accent)] px-4 py-2 text-center text-sm font-medium text-[color:var(--accent)]"
     >

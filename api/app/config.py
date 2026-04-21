@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     """
 
     database_url: str = (
-        "postgresql+psycopg://bicycles_app:bicycles_app@localhost:5432/bicycles_marketplace"
+        "postgresql+psycopg://hamstr_app:hamstr_app@localhost:5432/hamstr_marketplace"
     )
     cors_allow_origins: str = "http://localhost:3000"
     api_host: str = "127.0.0.1"

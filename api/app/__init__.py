@@ -1,1 +1,1 @@
-"""Skillful Bicycles Marketplace API package."""
+"""Hamstr API package."""
