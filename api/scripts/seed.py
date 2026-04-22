@@ -33,7 +33,7 @@ SAMPLES: list[dict[str, object]] = [
         "includes": "Bin cage (75L), 8\" silent wheel, hideout, food + bedding for a month.",
         "adoption_fee_cents": 0,
         "location": "Ottawa, ON",
-        "photo_url": "https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=800",
+        "photo_url": "/hamsters/beatrice.png",
         "current_human_name": "Greg",
         "current_human_email": "greg@example.com",
     },
@@ -52,7 +52,7 @@ SAMPLES: list[dict[str, object]] = [
         "includes": "20-gallon tank, 6\" wheel, sand bath, deep substrate.",
         "adoption_fee_cents": 1500,
         "location": "Toronto, ON",
-        "photo_url": "https://images.unsplash.com/photo-1591561582301-7ce6588cc286?w=800",
+        "photo_url": "/hamsters/mochi.png",
         "current_human_name": "Priya",
         "current_human_email": "priya@example.com",
     },
@@ -71,7 +71,7 @@ SAMPLES: list[dict[str, object]] = [
         "includes": "Glass tank, mesh lid, wheel, all the bedding.",
         "adoption_fee_cents": 0,
         "location": "Montreal, QC",
-        "photo_url": "https://images.unsplash.com/photo-1606214174585-fe31582dc6ee?w=800",
+        "photo_url": "/hamsters/pickle.png",
         "current_human_name": "Jordan",
         "current_human_email": "jordan@example.com",
     },
@@ -90,7 +90,7 @@ SAMPLES: list[dict[str, object]] = [
         "includes": "Cage, wheel, six cardboard tubes (the good kind).",
         "adoption_fee_cents": 2000,
         "location": "Vancouver, BC",
-        "photo_url": "https://images.unsplash.com/photo-1591561954557-26941169b49e?w=800",
+        "photo_url": "/hamsters/captain-whiskers.png",
         "current_human_name": "Sam",
         "current_human_email": "sam@example.com",
     },
@@ -108,7 +108,7 @@ SAMPLES: list[dict[str, object]] = [
         "includes": "Tall mesh enclosure, branches, hammock, food supply.",
         "adoption_fee_cents": 1000,
         "location": "Halifax, NS",
-        "photo_url": "https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=800",
+        "photo_url": "/hamsters/tofu.png",
         "current_human_name": "Morgan",
         "current_human_email": "morgan@example.com",
     },
@@ -126,7 +126,7 @@ SAMPLES: list[dict[str, object]] = [
         "includes": "Bin cage, wheel, two hideouts, bedding.",
         "adoption_fee_cents": 0,
         "location": "Calgary, AB",
-        "photo_url": "https://images.unsplash.com/photo-1591561954557-26941169b49e?w=800",
+        "photo_url": "/hamsters/pip.png",
         "current_human_name": "Alex",
         "current_human_email": "alex@example.com",
     },
@@ -134,19 +134,35 @@ SAMPLES: list[dict[str, object]] = [
 
 
 def seed() -> int:
-    """Insert ``SAMPLES`` into the hamsters table if the table is empty.
+    """Insert ``SAMPLES`` into the hamsters table.
 
-    Returns the number of rows inserted.
+    If the table is empty, inserts all samples. If rows already exist, refresh
+    their ``photo_url`` (matched by ``name``) so re-running the script picks up
+    new imagery without wiping the table.
+
+    Returns the number of rows inserted or updated.
     """
     with SessionLocal() as session:
         existing = session.query(Hamster).count()
-        if existing:
-            print(f"Skipping seed: {existing} hamster(s) already present.")
-            return 0
-        session.add_all(Hamster(**sample) for sample in SAMPLES)
+        if not existing:
+            session.add_all(Hamster(**sample) for sample in SAMPLES)
+            session.commit()
+            print(f"Inserted {len(SAMPLES)} sample hamsters.")
+            return len(SAMPLES)
+
+        updated = 0
+        for sample in SAMPLES:
+            row = session.query(Hamster).filter(Hamster.name == sample["name"]).first()
+            if row is None:
+                session.add(Hamster(**sample))
+                updated += 1
+                continue
+            if row.photo_url != sample["photo_url"]:
+                row.photo_url = sample["photo_url"]  # type: ignore[assignment]
+                updated += 1
         session.commit()
-        print(f"Inserted {len(SAMPLES)} sample hamsters.")
-        return len(SAMPLES)
+        print(f"Refreshed {updated} hamster photo(s); {existing} row(s) already present.")
+        return updated
 
 
 if __name__ == "__main__":
