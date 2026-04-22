@@ -90,7 +90,7 @@ export function FounderLetter() {
               style={{ color: "var(--coral-dark)" }}
             >
               <p className="body-lead">
-                In 2019 I picked up a Syrian named Beatrice from a Brooklyn
+                In 2019 I picked up a Munchkin named Beatrice from a Brooklyn
                 pet store. The clerk told me she was &ldquo;easy&rdquo; and
                 handed her over in a cardboard tube. She was anything but
                 easy &mdash; and I was anything but ready.

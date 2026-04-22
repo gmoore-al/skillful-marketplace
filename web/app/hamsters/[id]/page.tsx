@@ -37,7 +37,7 @@ export default async function HamsterDetailPage({
     GENDERS.find((g) => g.value === hamster.gender)?.label ?? hamster.gender;
 
   return (
-    <article className="flex flex-col gap-4">
+    <article className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-4 py-10 sm:px-6 md:py-16">
       <Link
         href="/"
         className="text-sm text-[color:var(--muted)] hover:underline"
@@ -45,7 +45,7 @@ export default async function HamsterDetailPage({
         ← Back to all hamsters
       </Link>
 
-      <div className="overflow-hidden rounded-xl border border-[color:var(--border)] bg-[color:var(--surface)]">
+      <div className="overflow-hidden rounded-xl border border-[color:var(--border)] bg-[color:var(--surface)] shadow-sm">
         <div className="relative aspect-square w-full bg-[color:var(--border)]/40">
           {hamster.photo_url ? (
             // eslint-disable-next-line @next/next/no-img-element

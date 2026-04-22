@@ -42,7 +42,7 @@ Transform the existing bicycle marketplace skeleton (`web/` Next.js + `api/` Fas
   - [ ] 🟥 Update `<head>` metadata: title "Hamstr — soft landings for small lives", description, OG tags
 
 - [ ] 🟥 **Step 2: Domain reshape (API)**
-  - [ ] 🟥 Replace `Listing` model with `Hamster`: `name`, `species` (Syrian/Dwarf/Roborovski/Chinese/Other), `age_months`, `gender`, `color`, `temperament` (shy/curious/cuddly/spicy/...), `story` (long text), `includes` (cage/wheel/food notes), `adoption_fee_cents` (default 0), `location`, `photo_url`, `current_human_name`, `current_human_email`, `created_at`
+  - [ ] 🟥 Replace `Listing` model with `Hamster`: `name`, `species` (Munchkin/Dwarf/Roborovski/Chinese/Other), `age_months`, `gender`, `color`, `temperament` (shy/curious/cuddly/spicy/...), `story` (long text), `includes` (cage/wheel/food notes), `adoption_fee_cents` (default 0), `location`, `photo_url`, `current_human_name`, `current_human_email`, `created_at`
   - [ ] 🟥 New Alembic migration: drop `listings`, create `hamsters`
   - [ ] 🟥 Rewrite `routers/listings.py` → `routers/hamsters.py` with `GET /hamsters` (filters: species, gender, location, max_fee), `GET /hamsters/{id}`, `POST /hamsters`
   - [ ] 🟥 Update `api/scripts/seed.py` with 6–8 hand-written hamster stories (including a nod to Beatrice)

@@ -6,7 +6,7 @@
  */
 
 export type Species =
-  | "syrian"
+  | "munchkin"
   | "dwarf_winter_white"
   | "dwarf_campbell"
   | "roborovski"
@@ -14,7 +14,7 @@ export type Species =
   | "other";
 
 export const SPECIES: { value: Species; label: string }[] = [
-  { value: "syrian", label: "Syrian" },
+  { value: "munchkin", label: "Munchkin" },
   { value: "dwarf_winter_white", label: "Dwarf — Winter White" },
   { value: "dwarf_campbell", label: "Dwarf — Campbell" },
   { value: "roborovski", label: "Roborovski" },

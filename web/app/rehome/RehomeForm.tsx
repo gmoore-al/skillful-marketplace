@@ -28,7 +28,7 @@ interface FormState {
 
 const INITIAL: FormState = {
   name: "",
-  species: "syrian",
+  species: "munchkin",
   age_months: "",
   gender: "unknown",
   color: "",
