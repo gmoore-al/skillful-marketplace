@@ -35,6 +35,18 @@
   --rose: #e76e70;
   --rose-dark: #5e1f20;
 
+  /* SAGE / green family (derived from palette swatch #5c8e6b) */
+  --sage-base: #e1ecdd;     /* pale sage wash, for card bg */
+  --sage-light: #b8d2b5;
+  --sage: #5c8e6b;          /* sage main */
+  --sage-dark: #1e3521;     /* deep forest, for text-on-pale-sage */
+
+  /* CHARTREUSE / olive family (derived from palette swatches #a8b36e + #c4c46c) */
+  --chartreuse-base: #eff0c9;   /* pale chartreuse wash */
+  --chartreuse-light: #dde0a0;
+  --chartreuse: #a8b36e;        /* olive main */
+  --chartreuse-dark: #3a3d14;   /* deep olive, for text-on-pale-chartreuse */
+
   /* CREAM / INK */
   --cream: #fbf6ee;
   --cream-deep: #f3ebda;
@@ -74,6 +86,14 @@
   --color-pink-base: var(--pink-base);
   --color-rose: var(--rose);
   --color-rose-dark: var(--rose-dark);
+  --color-sage: var(--sage);
+  --color-sage-base: var(--sage-base);
+  --color-sage-light: var(--sage-light);
+  --color-sage-dark: var(--sage-dark);
+  --color-chartreuse: var(--chartreuse);
+  --color-chartreuse-base: var(--chartreuse-base);
+  --color-chartreuse-light: var(--chartreuse-light);
+  --color-chartreuse-dark: var(--chartreuse-dark);
   --color-cream: var(--cream);
   --color-cream-deep: var(--cream-deep);
   --color-ink: var(--ink);

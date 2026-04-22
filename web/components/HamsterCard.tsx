@@ -3,14 +3,16 @@ import { Hamster, SPECIES, formatAge, formatFee } from "@/lib/api";
 import { Octagon } from "@/components/ui/Octagon";
 
 // Card colour palette — each card picks a (bg, fg, accent) trio that
-// reads cleanly on its own. Deterministic based on hamster.id so cards
-// don't reshuffle on re-render.
+// reads cleanly on its own. Six distinct light backgrounds from the
+// Hamstr palette so all six cards are unique. Deterministic based on
+// hamster.id so cards don't reshuffle on re-render.
 const CARD_PALETTES: { bg: string; fg: string; accent: string; chip: string; chipFg: string }[] = [
   { bg: "var(--peach-base)", fg: "var(--coral-dark)", accent: "var(--coral)", chip: "var(--ink)", chipFg: "var(--cream)" },
   { bg: "var(--mustard-base)", fg: "var(--mustard-dark)", accent: "var(--mustard)", chip: "var(--ink)", chipFg: "var(--cream)" },
   { bg: "var(--pink-base)", fg: "var(--rose-dark)", accent: "var(--rose)", chip: "var(--ink)", chipFg: "var(--cream)" },
   { bg: "var(--teal-base)", fg: "var(--teal-dark)", accent: "var(--teal)", chip: "var(--ink)", chipFg: "var(--cream)" },
-  { bg: "var(--cream-deep)", fg: "var(--ink)", accent: "var(--coral)", chip: "var(--ink)", chipFg: "var(--cream)" },
+  { bg: "var(--sage-base)", fg: "var(--sage-dark)", accent: "var(--sage)", chip: "var(--ink)", chipFg: "var(--cream)" },
+  { bg: "var(--chartreuse-base)", fg: "var(--chartreuse-dark)", accent: "var(--chartreuse)", chip: "var(--ink)", chipFg: "var(--cream)" },
 ];
 
 /**
