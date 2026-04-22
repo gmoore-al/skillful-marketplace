@@ -11,7 +11,7 @@ from pydantic import BaseModel, ConfigDict, EmailStr, Field
 class Species(str, Enum):
     """Common pet hamster species. ``OTHER`` covers anything not listed."""
 
-    SYRIAN = "syrian"
+    MUNCHKIN = "munchkin"
     DWARF_WINTER_WHITE = "dwarf_winter_white"
     DWARF_CAMPBELL = "dwarf_campbell"
     ROBOROVSKI = "roborovski"

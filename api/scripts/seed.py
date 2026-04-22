@@ -19,7 +19,7 @@ from app.models import Hamster  # noqa: E402
 SAMPLES: list[dict[str, object]] = [
     {
         "name": "Beatrice",
-        "species": "syrian",
+        "species": "munchkin",
         "age_months": 14,
         "gender": "female",
         "color": "Golden",
@@ -31,7 +31,7 @@ SAMPLES: list[dict[str, object]] = [
             "calm home with patient humans."
         ),
         "includes": "Bin cage (75L), 8\" silent wheel, hideout, food + bedding for a month.",
-        "adoption_fee_cents": 0,
+        "adoption_fee_cents": 9500,
         "location": "Ottawa, ON",
         "photo_url": "/hamsters/beatrice.png",
         "current_human_name": "Greg",
@@ -50,7 +50,7 @@ SAMPLES: list[dict[str, object]] = [
             "just outside the glass."
         ),
         "includes": "20-gallon tank, 6\" wheel, sand bath, deep substrate.",
-        "adoption_fee_cents": 1500,
+        "adoption_fee_cents": 12500,
         "location": "Toronto, ON",
         "photo_url": "/hamsters/mochi.png",
         "current_human_name": "Priya",
@@ -69,7 +69,7 @@ SAMPLES: list[dict[str, object]] = [
             "Looking for a quiet home with someone who reads a lot."
         ),
         "includes": "Glass tank, mesh lid, wheel, all the bedding.",
-        "adoption_fee_cents": 0,
+        "adoption_fee_cents": 6500,
         "location": "Montreal, QC",
         "photo_url": "/hamsters/pickle.png",
         "current_human_name": "Jordan",
@@ -77,7 +77,7 @@ SAMPLES: list[dict[str, object]] = [
     },
     {
         "name": "Captain Whiskers",
-        "species": "syrian",
+        "species": "munchkin",
         "age_months": 4,
         "gender": "male",
         "color": "Banded black and white",
@@ -88,7 +88,7 @@ SAMPLES: list[dict[str, object]] = [
             "hamster for a kid who's done the reading."
         ),
         "includes": "Cage, wheel, six cardboard tubes (the good kind).",
-        "adoption_fee_cents": 2000,
+        "adoption_fee_cents": 17500,
         "location": "Vancouver, BC",
         "photo_url": "/hamsters/captain-whiskers.png",
         "current_human_name": "Sam",
@@ -106,7 +106,7 @@ SAMPLES: list[dict[str, object]] = [
             "and lots of branches. We're moving overseas and can't take him with us."
         ),
         "includes": "Tall mesh enclosure, branches, hammock, food supply.",
-        "adoption_fee_cents": 1000,
+        "adoption_fee_cents": 8500,
         "location": "Halifax, NS",
         "photo_url": "/hamsters/tofu.png",
         "current_human_name": "Morgan",
@@ -124,7 +124,7 @@ SAMPLES: list[dict[str, object]] = [
             "month. Rehoming because of a new family allergy."
         ),
         "includes": "Bin cage, wheel, two hideouts, bedding.",
-        "adoption_fee_cents": 0,
+        "adoption_fee_cents": 2500,
         "location": "Calgary, AB",
         "photo_url": "/hamsters/pip.png",
         "current_human_name": "Alex",
@@ -133,12 +133,18 @@ SAMPLES: list[dict[str, object]] = [
 ]
 
 
+# Fields that get re-synced from SAMPLES onto existing rows when the table is
+# already populated. Keep this to low-risk editorial fields so we don't clobber
+# user-created listings or demo state.
+REFRESH_FIELDS: tuple[str, ...] = ("photo_url", "adoption_fee_cents", "species")
+
+
 def seed() -> int:
     """Insert ``SAMPLES`` into the hamsters table.
 
     If the table is empty, inserts all samples. If rows already exist, refresh
-    their ``photo_url`` (matched by ``name``) so re-running the script picks up
-    new imagery without wiping the table.
+    ``REFRESH_FIELDS`` on each matching sample (by ``name``) so re-running the
+    script picks up editorial changes without wiping the table.
 
     Returns the number of rows inserted or updated.
     """
@@ -157,11 +163,15 @@ def seed() -> int:
                 session.add(Hamster(**sample))
                 updated += 1
                 continue
-            if row.photo_url != sample["photo_url"]:
-                row.photo_url = sample["photo_url"]  # type: ignore[assignment]
+            changed = False
+            for field in REFRESH_FIELDS:
+                if getattr(row, field) != sample[field]:
+                    setattr(row, field, sample[field])
+                    changed = True
+            if changed:
                 updated += 1
         session.commit()
-        print(f"Refreshed {updated} hamster photo(s); {existing} row(s) already present.")
+        print(f"Refreshed {updated} hamster row(s); {existing} row(s) already present.")
         return updated
 
 
