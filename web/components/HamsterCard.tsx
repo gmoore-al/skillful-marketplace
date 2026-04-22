@@ -1,23 +1,7 @@
 import Link from "next/link";
 import { Hamster, SPECIES, formatAge, formatFee } from "@/lib/api";
+import { paletteFor } from "@/lib/palettes";
 import { Octagon } from "@/components/ui/Octagon";
-
-// Card colour palette — each card picks a (bg, fg, accent) trio that
-// reads cleanly on its own. Six distinct light backgrounds from the
-// Hamstr palette so all six cards are unique. Deterministic based on
-// hamster.id so cards don't reshuffle on re-render.
-//
-// NOTE: --teal-base is intentionally excluded because the HamsterGrid
-// section itself uses --teal-base as its background, and a card with
-// the same tone blends into the section and reads as transparent.
-const CARD_PALETTES: { bg: string; fg: string; accent: string; chip: string; chipFg: string }[] = [
-  { bg: "var(--peach-base)", fg: "var(--coral-dark)", accent: "var(--coral)", chip: "var(--ink)", chipFg: "var(--cream)" },
-  { bg: "var(--mustard-base)", fg: "var(--mustard-dark)", accent: "var(--mustard)", chip: "var(--ink)", chipFg: "var(--cream)" },
-  { bg: "var(--pink-base)", fg: "var(--rose-dark)", accent: "var(--rose)", chip: "var(--ink)", chipFg: "var(--cream)" },
-  { bg: "var(--cream-deep)", fg: "var(--ink)", accent: "var(--coral)", chip: "var(--ink)", chipFg: "var(--cream)" },
-  { bg: "var(--sage-base)", fg: "var(--sage-dark)", accent: "var(--sage)", chip: "var(--ink)", chipFg: "var(--cream)" },
-  { bg: "var(--chartreuse-base)", fg: "var(--chartreuse-dark)", accent: "var(--chartreuse)", chip: "var(--ink)", chipFg: "var(--cream)" },
-];
 
 /**
  * Hamster preview card — Tesoro pattern: each card is a fully tinted
@@ -28,7 +12,7 @@ const CARD_PALETTES: { bg: string; fg: string; accent: string; chip: string; chi
 export function HamsterCard({ hamster }: { hamster: Hamster }) {
   const speciesLabel =
     SPECIES.find((s) => s.value === hamster.species)?.label ?? hamster.species;
-  const palette = CARD_PALETTES[hamster.id % CARD_PALETTES.length];
+  const palette = paletteFor(hamster.id);
 
   return (
     <Link

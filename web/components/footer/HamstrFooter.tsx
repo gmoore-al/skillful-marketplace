@@ -75,7 +75,7 @@ export function HamstrFooter() {
           }}
         >
           <span>© {new Date().getFullYear()} Hamstr · Canada</span>
-          <span>Drag the shapes below — they&apos;re bouncy.</span>
+          <span>Drag the shapes below. They&apos;re bouncy.</span>
         </div>
       </div>
 

@@ -1,8 +1,23 @@
-import { ReactNode } from "react";
+export type ConnectedPillTone =
+  | "cream"
+  | "ink"
+  | "teal"
+  | "teal-base"
+  | "teal-light"
+  | "peach"
+  | "peach-base"
+  | "mustard"
+  | "mustard-base"
+  | "pink"
+  | "pink-base"
+  | "coral"
+  | "rose"
+  | "sage"
+  | "sage-light"
+  | "chartreuse"
+  | "chartreuse-light";
 
-type Tone = "cream" | "ink" | "teal" | "teal-base" | "teal-light" | "peach" | "peach-base" | "mustard" | "mustard-base" | "pink" | "pink-base" | "coral" | "rose";
-
-const tones: Record<Tone, { bg: string; fg: string }> = {
+const tones: Record<ConnectedPillTone, { bg: string; fg: string }> = {
   cream: { bg: "var(--cream)", fg: "var(--ink)" },
   ink: { bg: "var(--ink)", fg: "var(--cream)" },
   teal: { bg: "var(--teal)", fg: "var(--cream)" },
@@ -16,6 +31,13 @@ const tones: Record<Tone, { bg: string; fg: string }> = {
   "pink-base": { bg: "var(--pink-base)", fg: "var(--rose-dark)" },
   coral: { bg: "var(--coral)", fg: "var(--cream)" },
   rose: { bg: "var(--rose)", fg: "var(--cream)" },
+  sage: { bg: "var(--sage)", fg: "var(--cream)" },
+  "sage-light": { bg: "var(--sage-light)", fg: "var(--sage-dark)" },
+  chartreuse: { bg: "var(--chartreuse)", fg: "var(--chartreuse-dark)" },
+  "chartreuse-light": {
+    bg: "var(--chartreuse-light)",
+    fg: "var(--chartreuse-dark)",
+  },
 };
 
 /**
@@ -29,7 +51,7 @@ export function ConnectedPills({
   className = "",
 }: {
   parts: [string, string];
-  tones: [Tone, Tone];
+  tones: [ConnectedPillTone, ConnectedPillTone];
   className?: string;
 }) {
   const a = tones[pillTones[0]];

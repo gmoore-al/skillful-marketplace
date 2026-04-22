@@ -401,6 +401,10 @@ html.lenis body {
   padding-bottom: 0.18em;
   margin-bottom: -0.18em;
   vertical-align: top;
+  /* Keep all chars of a word together. Chars are inline-block and will
+     otherwise wrap between letters on narrow viewports, breaking words
+     like "landings" into "landin" + "gs". */
+  white-space: nowrap;
 }
 .rc-char {
   display: inline-block;

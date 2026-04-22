@@ -150,8 +150,7 @@ export function FounderLetter() {
             }}
           >
             Hamstr exists to give every small life a second, softer
-            chapter &mdash; in the hands of someone who actually wants
-            them.
+            chapter, in the hands of someone who actually wants them.
           </p>
         </RevealUp>
       </div>

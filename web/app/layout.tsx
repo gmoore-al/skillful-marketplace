@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Inter } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
@@ -25,11 +26,11 @@ const body = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Hamstr — soft landings for small lives",
+  title: "Hamstr · soft landings for small lives",
   description:
     "A gentle, story-driven marketplace for rehoming hamsters with care. Made in Canada for hamsters everywhere.",
   openGraph: {
-    title: "Hamstr — soft landings for small lives",
+    title: "Hamstr · soft landings for small lives",
     description:
       "A gentle, story-driven marketplace for rehoming hamsters with care.",
     type: "website",
@@ -52,6 +53,15 @@ export default function RootLayout({
       className={`${display.variable} ${body.variable} h-full antialiased`}
     >
       <body className="min-h-full">
+        {/* Strips `data-cursor-ref` attributes the Cursor IDE browser
+            injects into the DOM for its inspector. Without this, React
+            flags them as SSR/CSR hydration mismatches in dev. Runs before
+            hydration (Next's `beforeInteractive` strategy) and stays
+            active via a MutationObserver so any re-injection after
+            hydration is silent too. No-op in real user browsers. */}
+        <Script id="strip-cursor-refs" strategy="beforeInteractive">
+          {`(function(){try{var strip=function(r){if(r&&r.removeAttribute){r.removeAttribute('data-cursor-ref');}};document.querySelectorAll('[data-cursor-ref]').forEach(strip);var mo=new MutationObserver(function(muts){for(var i=0;i<muts.length;i++){var m=muts[i];if(m.type==='attributes'){strip(m.target);}else if(m.addedNodes){m.addedNodes.forEach(function(n){if(n.nodeType===1){strip(n);if(n.querySelectorAll){n.querySelectorAll('[data-cursor-ref]').forEach(strip);}}});}}});mo.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['data-cursor-ref']});}catch(e){}})();`}
+        </Script>
         <SmoothScroll />
         <Header />
         <PageTransition />

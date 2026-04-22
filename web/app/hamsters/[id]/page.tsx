@@ -8,10 +8,20 @@ import {
   formatAge,
   formatFee,
 } from "@/lib/api";
+import { paletteFor } from "@/lib/palettes";
+import { Octagon } from "@/components/ui/Octagon";
+import { ConnectedPills } from "@/components/ui/ConnectedPills";
+import { RevealUp } from "@/components/motion/RevealUp";
 import { ContactCurrentHumanToggle } from "./ContactCurrentHumanToggle";
 
 /**
- * Render a single hamster's details. 404s if the id is non-numeric or missing.
+ * Hamster detail — Tesoro pattern: full-bleed coloured section that
+ * reuses the same deterministic palette as the hamster's grid card,
+ * so clicking a card feels like walking into the card. Large octagon
+ * photo on a saturated accent, display-lg name, pill-style spec chips,
+ * and matching-tint story / comes-with / contact blocks.
+ *
+ * 404s if the id is non-numeric or missing.
  */
 export default async function HamsterDetailPage({
   params,
@@ -35,92 +45,246 @@ export default async function HamsterDetailPage({
     SPECIES.find((s) => s.value === hamster.species)?.label ?? hamster.species;
   const genderLabel =
     GENDERS.find((g) => g.value === hamster.gender)?.label ?? hamster.gender;
+  const palette = paletteFor(hamster.id);
+
+  const specs: { label: string; value: string }[] = [
+    { label: "Species", value: speciesLabel },
+    { label: "Age", value: formatAge(hamster.age_months) },
+    { label: "Gender", value: genderLabel },
+    ...(hamster.color ? [{ label: "Color", value: hamster.color }] : []),
+    ...(hamster.temperament
+      ? [{ label: "Temperament", value: hamster.temperament }]
+      : []),
+    ...(hamster.location
+      ? [{ label: "Location", value: hamster.location }]
+      : []),
+  ];
 
   return (
-    <article className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-4 py-10 sm:px-6 md:py-16">
-      <Link
-        href="/"
-        className="text-sm text-[color:var(--muted)] hover:underline"
+    <section
+      data-tone={palette.tone}
+      className="relative w-full"
+      style={{ background: palette.bg, color: palette.fg }}
+    >
+      <div
+        className="mx-auto flex w-full flex-col"
+        style={{
+          maxWidth: 1280,
+          paddingLeft: "var(--site-edge)",
+          paddingRight: "var(--site-edge)",
+          paddingTop: "clamp(7rem, 14vh, 11rem)",
+          paddingBottom: "clamp(4rem, 9vh, 7rem)",
+          gap: "clamp(2.5rem, 5vh, 4rem)",
+        }}
       >
-        ← Back to all hamsters
-      </Link>
+        <RevealUp>
+          <Link
+            href="/#hamsters"
+            className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-bold uppercase tracking-wider transition-transform hover:-translate-y-0.5"
+            style={{
+              background: "color-mix(in srgb, currentColor 10%, transparent)",
+              color: palette.fg,
+            }}
+          >
+            <span aria-hidden>←</span>
+            <span>Back to all hamsters</span>
+          </Link>
+        </RevealUp>
 
-      <div className="overflow-hidden rounded-xl border border-[color:var(--border)] bg-[color:var(--surface)] shadow-sm">
-        <div className="relative aspect-square w-full bg-[color:var(--border)]/40">
-          {hamster.photo_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={hamster.photo_url}
-              alt={hamster.name}
-              className="h-full w-full object-cover"
-            />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center text-6xl">
-              🐹
+        <div className="grid w-full grid-cols-1 gap-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:items-center lg:gap-14">
+          {/* LEFT — octagon photo on an accent pad */}
+          <RevealUp className="flex justify-center lg:justify-start">
+            <div
+              className="rounded-[2.25rem] p-6 sm:p-8"
+              style={{
+                background: "color-mix(in srgb, currentColor 8%, transparent)",
+                width: "100%",
+                maxWidth: 520,
+              }}
+            >
+              <Octagon
+                className="aspect-square w-full"
+                style={{ background: palette.accent }}
+              >
+                {hamster.photo_url ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    src={hamster.photo_url}
+                    alt={hamster.name}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <div
+                    className="flex h-full w-full items-center justify-center"
+                    style={{
+                      fontSize: "clamp(120px, 18vw, 220px)",
+                      lineHeight: 1,
+                    }}
+                  >
+                    🐹
+                  </div>
+                )}
+              </Octagon>
             </div>
-          )}
+          </RevealUp>
+
+          {/* RIGHT — name, fee, eyebrow, spec pills */}
+          <div className="flex flex-col gap-6">
+            <RevealUp className="flex flex-col items-start gap-4">
+              <ConnectedPills
+                parts={["LOOKING FOR", "A HOME"]}
+                tones={palette.pills}
+              />
+              <h1
+                className="display-xl"
+                style={{ color: palette.fg, maxWidth: "12ch" }}
+              >
+                {hamster.name.toLowerCase()}
+                <span style={{ color: palette.accent }}>.</span>
+              </h1>
+              <p
+                className="text-xs font-bold uppercase tracking-[0.18em]"
+                style={{ color: palette.fg, opacity: 0.7 }}
+              >
+                {[speciesLabel, formatAge(hamster.age_months), hamster.color]
+                  .filter(Boolean)
+                  .join(" · ")}
+              </p>
+            </RevealUp>
+
+            <RevealUp delay={0.1}>
+              <div
+                className="inline-flex items-center gap-3 rounded-full px-5 py-3"
+                style={{ background: palette.chip, color: palette.chipFg }}
+              >
+                <span className="text-xs font-bold uppercase tracking-[0.18em] opacity-75">
+                  Adoption fee
+                </span>
+                <span
+                  className="font-display"
+                  style={{
+                    fontWeight: 800,
+                    letterSpacing: "-0.02em",
+                    fontSize: "clamp(1.125rem, 1.6vw, 1.375rem)",
+                  }}
+                >
+                  {formatFee(hamster.adoption_fee_cents)}
+                </span>
+              </div>
+            </RevealUp>
+
+            <RevealUp delay={0.2}>
+              {/* Spec list: label above value inside a soft rounded card.
+                  Two-column grid on wider screens so multi-line values
+                  like "Curious, gentle, surprisingly opinionated about
+                  millet." wrap cleanly without blowing out mobile width. */}
+              <dl
+                className="grid w-full grid-cols-1 gap-x-6 gap-y-3 rounded-[1.5rem] px-5 py-4 sm:grid-cols-2"
+                style={{
+                  background:
+                    "color-mix(in srgb, currentColor 8%, transparent)",
+                }}
+              >
+                {specs.map((s) => (
+                  <div
+                    key={s.label}
+                    className="flex flex-col gap-1 min-w-0"
+                  >
+                    <dt
+                      className="text-[0.65rem] font-bold uppercase tracking-[0.18em]"
+                      style={{ opacity: 0.6 }}
+                    >
+                      {s.label}
+                    </dt>
+                    <dd className="text-sm font-semibold leading-snug break-words">
+                      {s.value}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </RevealUp>
+          </div>
         </div>
 
-        <div className="flex flex-col gap-3 p-4">
-          <div>
-            <h1 className="text-2xl font-bold leading-tight">{hamster.name}</h1>
-            <p className="mt-1 text-2xl font-semibold text-[color:var(--accent)]">
-              {formatFee(hamster.adoption_fee_cents)}
-            </p>
-          </div>
-
-          <dl className="grid grid-cols-2 gap-y-2 text-sm">
-            <Spec label="Species" value={speciesLabel} />
-            <Spec label="Age" value={formatAge(hamster.age_months)} />
-            <Spec label="Gender" value={genderLabel} />
-            <Spec label="Color" value={hamster.color || "—"} />
-            <Spec label="Temperament" value={hamster.temperament || "—"} />
-            <Spec label="Location" value={hamster.location || "—"} />
-          </dl>
-
+        {/* Story + Comes with + Contact — stacked tinted blocks */}
+        <div className="grid w-full grid-cols-1 gap-5 lg:grid-cols-3">
           {hamster.story ? (
-            <section>
-              <h2 className="text-xs uppercase tracking-wide text-[color:var(--muted)]">
-                Their story
-              </h2>
-              <p className="mt-1 whitespace-pre-wrap text-sm leading-relaxed">
-                {hamster.story}
-              </p>
-            </section>
+            <RevealUp
+              delay={0.1}
+              className="lg:col-span-2"
+            >
+              <article
+                className="flex h-full flex-col gap-4 rounded-[1.75rem] p-7 sm:p-9"
+                style={{
+                  background:
+                    "color-mix(in srgb, currentColor 8%, transparent)",
+                }}
+              >
+                <h2
+                  className="text-xs font-bold uppercase tracking-[0.18em]"
+                  style={{ opacity: 0.65 }}
+                >
+                  Their story
+                </h2>
+                <p className="body-main whitespace-pre-wrap">{hamster.story}</p>
+              </article>
+            </RevealUp>
           ) : null}
+
+          <RevealUp delay={0.2}>
+            <aside
+              className="flex h-full flex-col gap-4 rounded-[1.75rem] p-7 sm:p-9"
+              style={{
+                background: palette.accent,
+                color: palette.accentFg,
+              }}
+            >
+              <h2
+                className="text-xs font-bold uppercase tracking-[0.18em]"
+                style={{ opacity: 0.75 }}
+              >
+                Current human
+              </h2>
+              <p
+                className="font-display"
+                style={{
+                  fontWeight: 800,
+                  letterSpacing: "-0.02em",
+                  fontSize: "clamp(1.5rem, 2vw, 1.875rem)",
+                }}
+              >
+                {hamster.current_human_name}
+              </p>
+              <ContactCurrentHumanToggle
+                email={hamster.current_human_email}
+                hamsterName={hamster.name}
+              />
+            </aside>
+          </RevealUp>
 
           {hamster.includes ? (
-            <section>
-              <h2 className="text-xs uppercase tracking-wide text-[color:var(--muted)]">
-                Comes with
-              </h2>
-              <p className="mt-1 whitespace-pre-wrap text-sm leading-relaxed">
-                {hamster.includes}
-              </p>
-            </section>
+            <RevealUp delay={0.3} className="lg:col-span-3">
+              <article
+                className="flex flex-col gap-4 rounded-[1.75rem] p-7 sm:p-9"
+                style={{
+                  background:
+                    "color-mix(in srgb, currentColor 8%, transparent)",
+                }}
+              >
+                <h2
+                  className="text-xs font-bold uppercase tracking-[0.18em]"
+                  style={{ opacity: 0.65 }}
+                >
+                  Comes with
+                </h2>
+                <p className="body-main whitespace-pre-wrap">
+                  {hamster.includes}
+                </p>
+              </article>
+            </RevealUp>
           ) : null}
-
-          <div className="mt-2 rounded-lg border border-[color:var(--border)] p-3">
-            <p className="text-xs uppercase tracking-wide text-[color:var(--muted)]">
-              Current human
-            </p>
-            <p className="mt-1 font-medium">{hamster.current_human_name}</p>
-            <ContactCurrentHumanToggle
-              email={hamster.current_human_email}
-              hamsterName={hamster.name}
-            />
-          </div>
         </div>
       </div>
-    </article>
-  );
-}
-
-function Spec({ label, value }: { label: string; value: string }) {
-  return (
-    <>
-      <dt className="text-[color:var(--muted)]">{label}</dt>
-      <dd className="text-right font-medium">{value}</dd>
-    </>
+    </section>
   );
 }

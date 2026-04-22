@@ -109,7 +109,7 @@ export function HamsterGrid({
               color: "var(--teal-dark)",
             }}
           >
-            {error} — make sure the API is running on port 8000.
+            {error}. Make sure the API is running on port 8000.
           </div>
         ) : hamsters.length === 0 ? (
           <div
