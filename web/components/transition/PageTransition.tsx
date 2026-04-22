@@ -101,22 +101,21 @@ export function PageTransition() {
     const fromNav = arrivedFromNavRef.current;
     arrivedFromNavRef.current = false;
 
-    // Reset scroll to the top of the new page while the curtain is up.
-    // Without this, Lenis is paused during navigation so Next's built-in
-    // scroll-to-top never lands, and if the new page is shorter than the
-    // old scroll position the browser clamps at the bottom (visible as a
-    // jump to the footer). We scroll both Lenis (if present) and the
-    // window so it works with or without smooth scrolling, unless the
-    // URL has a hash — then honour the anchor instead.
+    // Belt: make absolutely sure we land at the top of the new page
+    // before the curtain lifts. `playCurtainIn` already scrolled to 0
+    // before firing `router.push`, but if React/Next reschedules work
+    // the native scroll position can drift back to the old value while
+    // the new, shorter page is mounting (visible as a jump to the
+    // footer). Re-asserting here while the curtain is still opaque
+    // makes the bug unreproducible regardless of timing.
     if (fromNav && typeof window !== "undefined") {
       const hasHash = window.location.hash && window.location.hash !== "#";
       if (!hasHash) {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
         const lenis = getLenis();
-        if (lenis) {
-          lenis.scrollTo(0, { immediate: true, force: true });
-        } else {
-          window.scrollTo(0, 0);
-        }
+        if (lenis) lenis.scrollTo(0, { immediate: true, force: true });
       }
     }
 
@@ -192,15 +191,34 @@ export function PageTransition() {
       )
         return;
 
+      // Capture-phase listener fires before next/link's onClick, so we
+      // stop propagation to prevent Link from also calling router.push
+      // (which would race with our curtain timeline and bypass the
+      // scroll reset below).
       e.preventDefault();
+      e.stopPropagation();
       const dest = url.pathname + url.search + url.hash;
+      const destHasHash = Boolean(url.hash && url.hash !== "#");
       playCurtainIn(() => {
+        // Snap the native scroll to the top *before* we push the new
+        // route so the incoming page always mounts at y=0. If we skip
+        // this, Lenis is stopped at the old scroll offset and Next's
+        // built-in scroll-to-top doesn't land while Lenis is paused —
+        // which means a shorter new page clamps its scroll to the
+        // bottom and the user sees the footer first.
+        if (!destHasHash) {
+          window.scrollTo(0, 0);
+          document.documentElement.scrollTop = 0;
+          document.body.scrollTop = 0;
+          const lenis = getLenis();
+          if (lenis) lenis.scrollTo(0, { immediate: true, force: true });
+        }
         router.push(dest);
       });
     };
 
-    document.addEventListener("click", onClick);
-    return () => document.removeEventListener("click", onClick);
+    document.addEventListener("click", onClick, true);
+    return () => document.removeEventListener("click", onClick, true);
   }, [router]);
 
   const playCurtainIn = (then: () => void) => {
