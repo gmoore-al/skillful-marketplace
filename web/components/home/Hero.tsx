@@ -1,6 +1,5 @@
 "use client";
 
-import { ConnectedPills } from "@/components/ui/ConnectedPills";
 import { PillCTA } from "@/components/ui/PillCTA";
 import { RevealChars } from "@/components/motion/RevealChars";
 import { RevealUp } from "@/components/motion/RevealUp";
@@ -11,8 +10,8 @@ import { CursorHamster } from "@/components/CursorHamster";
  * brand wordmark at the bottom of the viewport. Cream background,
  * teal accents. No floating stickers (those caused overlap chaos).
  *
- * Layout: [eyebrow pills] → [intro headline] → [supporting copy] →
- * [pill CTAs] → [photo / illustration band] → [HUGE "hamstr" mark]
+ * Layout: [intro headline] → [supporting copy] → [pill CTAs] →
+ * [HUGE "hamstr" mark]
  */
 export function Hero() {
   return (
@@ -31,18 +30,11 @@ export function Hero() {
           maxWidth: 1440,
           paddingLeft: "var(--site-edge)",
           paddingRight: "var(--site-edge)",
-          paddingTop: "clamp(7rem, 13vh, 11rem)",
+          paddingTop: "clamp(10rem, 20vh, 17rem)",
           paddingBottom: "clamp(2rem, 6vh, 5rem)",
           gap: "clamp(1.5rem, 3vh, 2.75rem)",
         }}
       >
-        <RevealUp className="flex flex-col items-center gap-5">
-          <ConnectedPills
-            parts={["EST. CANADA", "2019"]}
-            tones={["mustard", "ink"]}
-          />
-        </RevealUp>
-
         {/* The headline — big but not the wordmark; Tesoro keeps the
             brand mark itself as the showstopper. */}
         <h1

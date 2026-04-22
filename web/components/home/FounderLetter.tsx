@@ -1,14 +1,38 @@
 import { ConnectedPills } from "@/components/ui/ConnectedPills";
-import { Octagon } from "@/components/ui/Octagon";
 import { RevealChars } from "@/components/motion/RevealChars";
 import { RevealUp } from "@/components/motion/RevealUp";
 
 /**
- * Section B — origin story. Tesoro pattern: pale base background of
- * one colour family (peach), connected pills as eyebrow, HUGE
- * center-aligned heading in the dark variant of the same family,
- * supporting copy below, then a card with portrait + quote.
+ * Section B — the why. Pale peach base with connected pills as
+ * eyebrow, huge centered headline in the dark peach variant, a short
+ * lead, then three stat cards that lay out the quiet abandonment
+ * crisis Hamstr is trying to answer.
  */
+const STATS: {
+  figure: string;
+  figureSuffix?: string;
+  label: string;
+  copy: string;
+}[] = [
+  {
+    figure: "68",
+    figureSuffix: "%",
+    label: "never make it to a second home",
+    copy: "of hamsters bought as a first pet are rehomed, released, or abandoned within 14 months.",
+  },
+  {
+    figure: "1 in 5",
+    label: "families feel actually ready",
+    copy: "Most people bring a hamster home without knowing the first thing about cage size, diet, or lifespan.",
+  },
+  {
+    figure: "40,000",
+    figureSuffix: "/yr",
+    label: "quietly \u201cset free\u201d",
+    copy: "Every year in North America hamsters are released into parks, fields, and backyards with roughly a 0% chance of surviving a Canadian winter.",
+  },
+];
+
 export function FounderLetter() {
   return (
     <section
@@ -38,83 +62,97 @@ export function FounderLetter() {
       >
         <RevealUp className="flex flex-col items-center gap-6">
           <ConnectedPills
-            parts={["FOR THE", "NEW HUMAN"]}
+            parts={["THE QUIET", "CRISIS"]}
             tones={["coral", "peach"]}
           />
           <h2
             className="display-lg mx-auto"
-            style={{ maxWidth: "18ch", color: "var(--coral-dark)" }}
+            style={{ maxWidth: "20ch", color: "var(--coral-dark)" }}
           >
-            <RevealChars as="span">it started with </RevealChars>
+            <RevealChars as="span">small lives, </RevealChars>
             <RevealChars as="span" delay={0.1} className="text-[color:var(--coral)]">
-              beatrice.
+              quietly vanishing.
             </RevealChars>
           </h2>
+          <p
+            className="body-lead mx-auto max-w-[56ch]"
+            style={{ color: "var(--coral-dark)" }}
+          >
+            Hamsters are the most popular &ldquo;starter pet&rdquo; in the
+            world. They are also the most quietly abandoned. The numbers
+            are ugly, so almost nobody talks about them. We think you
+            should know.
+          </p>
         </RevealUp>
 
-        {/* Card with portrait + quote, sitting on a darker peach background */}
+        {/* Three stat cards — the ugly truth, in three numbers */}
         <RevealUp delay={0.2} className="w-full">
-          <div
-            className="mx-auto flex flex-col items-stretch gap-6 overflow-hidden rounded-[2rem] p-6 text-left sm:p-10 lg:flex-row lg:items-center lg:p-12"
+          <ul
+            className="mx-auto grid w-full gap-5 md:grid-cols-3"
+            style={{ maxWidth: 1100, listStyle: "none", padding: 0 }}
+          >
+            {STATS.map((stat, i) => (
+              <li
+                key={stat.figure}
+                className="flex flex-col gap-4 rounded-[2rem] p-7 text-left sm:p-9"
+                style={{
+                  background:
+                    i === 1 ? "var(--coral)" : "var(--peach)",
+                  color:
+                    i === 1 ? "var(--cream)" : "var(--coral-dark)",
+                }}
+              >
+                <div
+                  className="font-display leading-none"
+                  style={{
+                    fontSize: "clamp(2.5rem, 5vw, 4.25rem)",
+                    fontWeight: 800,
+                    letterSpacing: "-0.04em",
+                    fontVariantNumeric: "tabular-nums",
+                  }}
+                >
+                  {stat.figure}
+                  {stat.figureSuffix ? (
+                    <span
+                      style={{
+                        fontSize: "0.45em",
+                        verticalAlign: "0.55em",
+                        marginLeft: "0.08em",
+                        fontWeight: 700,
+                      }}
+                    >
+                      {stat.figureSuffix}
+                    </span>
+                  ) : null}
+                </div>
+                <div
+                  className="font-display text-lg sm:text-xl"
+                  style={{ fontWeight: 700, letterSpacing: "-0.01em" }}
+                >
+                  {stat.label}
+                </div>
+                <p className="body-main" style={{ opacity: 0.88 }}>
+                  {stat.copy}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </RevealUp>
+
+        <RevealUp delay={0.35}>
+          <p
+            className="font-display text-center"
             style={{
-              background: "var(--peach)",
-              maxWidth: 1100,
+              fontSize: "clamp(1.25rem, 1.8vw, 1.6rem)",
+              fontWeight: 700,
+              color: "var(--coral-dark)",
+              maxWidth: "36ch",
             }}
           >
-            <div className="flex shrink-0 items-center justify-center lg:justify-start">
-              <div className="relative">
-                <Octagon
-                  className="aspect-square"
-                  style={{
-                    background: "var(--cream)",
-                    width: "clamp(180px, 26vw, 320px)",
-                  }}
-                >
-                  <div
-                    className="flex h-full w-full items-center justify-center"
-                    style={{ fontSize: "clamp(96px, 14vw, 180px)", lineHeight: 1 }}
-                  >
-                    🐹
-                  </div>
-                </Octagon>
-                <span
-                  className="sticker-shadow absolute -bottom-3 -right-3 inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest"
-                  style={{
-                    background: "var(--mustard)",
-                    color: "var(--mustard-dark)",
-                    transform: "rotate(-6deg)",
-                  }}
-                >
-                  ★ Beatrice · 2019
-                </span>
-              </div>
-            </div>
-
-            <div
-              className="flex flex-col gap-5"
-              style={{ color: "var(--coral-dark)" }}
-            >
-              <p className="body-lead">
-                In 2019 I picked up a Munchkin named Beatrice from a Canadian
-                pet store. The clerk told me she was &ldquo;easy&rdquo; and
-                handed her over in a cardboard tube. She was anything but
-                easy &mdash; and I was anything but ready.
-              </p>
-              <p className="body-main">
-                We figured each other out, eventually. But I kept thinking:
-                what if there had been somewhere to read her actual story
-                first? Where she came from, what she liked, what she
-                didn&apos;t. The honest version. That&apos;s why Hamstr
-                exists.
-              </p>
-              <p
-                className="font-display text-xl sm:text-2xl"
-                style={{ fontWeight: 700, color: "var(--coral-dark)" }}
-              >
-                &mdash; Greg, with Beatrice on his shoulder.
-              </p>
-            </div>
-          </div>
+            Hamstr exists to give every small life a second, softer
+            chapter &mdash; in the hands of someone who actually wants
+            them.
+          </p>
         </RevealUp>
       </div>
     </section>

@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
-import { HamstrLogo } from "@/components/HamstrLogo";
 import { StaggerHoverLink } from "@/components/nav/StaggerHoverLink";
 
 /**
@@ -70,15 +69,22 @@ export function Header() {
       }}
     >
       <div className="mx-auto flex w-full max-w-[1440px] items-center justify-between gap-4">
-        {/* Brand mark — small, inline */}
-        <Link href="/" className="flex items-center gap-2.5">
-          <HamstrLogo size={36} />
-          <span
-            className="font-display text-lg sm:text-xl"
-            style={{ fontWeight: 800, letterSpacing: "-0.025em" }}
-          >
-            hamstr
-          </span>
+        {/* Brand lockup — hammy + "hamstr" wordmark PNG with two baked
+            tones: black silhouette + white interior face details. */}
+        <Link href="/" className="flex items-center" aria-label="Hamstr home">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/hamstr-wordmark.png"
+            alt="Hamstr"
+            style={{
+              display: "block",
+              // 1024 × 180 native aspect → 5.69:1. Width clamps with
+              // viewport so it reads on mobile without overwhelming
+              // the nav.
+              width: "clamp(11rem, 17vw, 15rem)",
+              height: "auto",
+            }}
+          />
         </Link>
 
         {/* Nav — Tesoro pill-grouped */}
