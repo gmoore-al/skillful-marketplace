@@ -10,6 +10,10 @@ import { getLenis } from "@/components/motion/SmoothScroll";
  * sweeps in from below, an octagon-clipped logo pops in, then on route
  * change the panel sweeps off the top.
  *
+ * While the curtain is up, the hamster face runs an ambient loop
+ * (breathe + blink + head tilt) so the wait feels warm instead of
+ * empty. Loop is killed the moment the curtain starts lifting.
+ *
  * Internal `<a>` clicks are intercepted so we can play the curtain
  * before navigating. External, hash, and modifier-clicks pass through.
  *
@@ -20,7 +24,57 @@ export function PageTransition() {
   const pathname = usePathname();
   const curtainRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
+  const hammyRef = useRef<HTMLImageElement>(null);
+  const ambientRef = useRef<gsap.core.Timeline | null>(null);
   const navigatingRef = useRef(false);
+  // Set when we're about to arrive from a navigation curtain — lets the
+  // reveal effect know the hamster has already animated during the
+  // curtain-in hold, so it can skip the extra intro hold and wave off
+  // immediately.
+  const arrivedFromNavRef = useRef(false);
+
+  // Start the cute ambient loop on the hamster face. Idempotent:
+  // calling twice will not stack loops.
+  const startHammyAmbient = () => {
+    const hammy = hammyRef.current;
+    if (!hammy) return;
+    if (ambientRef.current) return;
+
+    // Reset transforms so every run starts clean.
+    gsap.set(hammy, {
+      scale: 1,
+      scaleX: 1,
+      scaleY: 1,
+      rotation: 0,
+      y: 0,
+      transformOrigin: "50% 70%",
+    });
+
+    // Single looping timeline: breathe twice, then blink, then a
+    // playful head tilt, then back to breathing. ~2.8s cycle.
+    ambientRef.current = gsap
+      .timeline({ repeat: -1 })
+      .to(hammy, { y: -3, scale: 1.04, duration: 0.85, ease: "sine.inOut" })
+      .to(hammy, { y: 0, scale: 1, duration: 0.85, ease: "sine.inOut" })
+      .to(hammy, { scaleY: 0.55, duration: 0.09, ease: "power2.in" }, "+=0.1")
+      .to(hammy, { scaleY: 1, duration: 0.12, ease: "power2.out" })
+      .to(
+        hammy,
+        { rotation: -7, duration: 0.22, ease: "power2.out" },
+        "+=0.25",
+      )
+      .to(hammy, { rotation: 5, duration: 0.28, ease: "power2.inOut" })
+      .to(hammy, { rotation: 0, duration: 0.22, ease: "power2.out" });
+  };
+
+  const stopHammyAmbient = () => {
+    ambientRef.current?.kill();
+    ambientRef.current = null;
+    const hammy = hammyRef.current;
+    if (hammy) {
+      gsap.set(hammy, { scale: 1, scaleX: 1, scaleY: 1, rotation: 0, y: 0 });
+    }
+  };
 
   // Reveal on mount + on every pathname change.
   useEffect(() => {
@@ -44,17 +98,60 @@ export function PageTransition() {
       },
     });
 
-    tl.set(curtain, { autoAlpha: 1, yPercent: 0 })
-      .set(logo, { autoAlpha: 1, scale: 1 })
-      .to(logo, { autoAlpha: 0, scale: 0.9, duration: 0.25, ease: "power2.in" })
+    const fromNav = arrivedFromNavRef.current;
+    arrivedFromNavRef.current = false;
+
+    // Reset scroll to the top of the new page while the curtain is up.
+    // Without this, Lenis is paused during navigation so Next's built-in
+    // scroll-to-top never lands, and if the new page is shorter than the
+    // old scroll position the browser clamps at the bottom (visible as a
+    // jump to the footer). We scroll both Lenis (if present) and the
+    // window so it works with or without smooth scrolling, unless the
+    // URL has a hash — then honour the anchor instead.
+    if (fromNav && typeof window !== "undefined") {
+      const hasHash = window.location.hash && window.location.hash !== "#";
+      if (!hasHash) {
+        const lenis = getLenis();
+        if (lenis) {
+          lenis.scrollTo(0, { immediate: true, force: true });
+        } else {
+          window.scrollTo(0, 0);
+        }
+      }
+    }
+
+    tl.set(curtain, { autoAlpha: 1, yPercent: 0 }).set(logo, {
+      autoAlpha: 1,
+      scale: 1,
+    });
+
+    // On first page load there's no preceding curtain-in, so give the
+    // hamster a moment to be cute before we say goodbye. On arrival
+    // from a navigation, the hamster already breathed during the
+    // curtain-in hold, so skip straight to the wave.
+    if (!fromNav) {
+      tl.call(startHammyAmbient).to({}, { duration: 1.0 });
+    }
+
+    tl
+      // Tiny "goodbye wave" before the logo fades — one last squish so
+      // the hamster feels like it's sending the user off.
+      .to(logo, {
+        scale: 1.08,
+        duration: 0.22,
+        ease: "back.out(2)",
+        onStart: stopHammyAmbient,
+      })
+      .to(logo, { autoAlpha: 0, scale: 0.88, duration: 0.3, ease: "power2.in" })
       .to(
         curtain,
-        { yPercent: -100, duration: 0.7, ease: "expo.inOut" },
-        "-=0.05",
+        { yPercent: -100, duration: 0.85, ease: "expo.inOut" },
+        "-=0.08",
       );
 
     return () => {
       tl.kill();
+      stopHammyAmbient();
     };
   }, [pathname]);
 
@@ -119,18 +216,30 @@ export function PageTransition() {
 
     gsap.set(curtain, { autoAlpha: 1, yPercent: 100 });
     gsap.set(logo, { autoAlpha: 0, scale: 0.6, rotate: -20 });
+    stopHammyAmbient();
 
     const tl = gsap.timeline({
-      onComplete: () => then(),
+      onComplete: () => {
+        arrivedFromNavRef.current = true;
+        then();
+      },
     });
-    tl.to(curtain, { yPercent: 0, duration: 0.55, ease: "expo.inOut" })
+    tl.to(curtain, { yPercent: 0, duration: 0.6, ease: "expo.inOut" })
       .to(
         logo,
-        { autoAlpha: 1, scale: 1, rotate: 0, duration: 0.4, ease: "back.out(1.6)" },
+        {
+          autoAlpha: 1,
+          scale: 1,
+          rotate: 0,
+          duration: 0.45,
+          ease: "back.out(1.8)",
+          onComplete: startHammyAmbient,
+        },
         "-=0.2",
       )
-      // brief hold so the logo registers
-      .to({}, { duration: 0.12 });
+      // Longer hold so the hamster gets to breathe, blink, and wiggle
+      // at least once before we fire the actual navigation.
+      .to({}, { duration: 1.1 });
   };
 
   return (
@@ -163,9 +272,14 @@ export function PageTransition() {
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
+          ref={hammyRef}
           src="/hammy.png"
           alt=""
-          style={{ width: "70%", height: "auto" }}
+          style={{
+            width: "70%",
+            height: "auto",
+            willChange: "transform",
+          }}
         />
       </div>
     </div>

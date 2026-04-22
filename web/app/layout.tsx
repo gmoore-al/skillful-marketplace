@@ -55,12 +55,14 @@ export default function RootLayout({
       <body className="min-h-full">
         {/* Strips `data-cursor-ref` attributes the Cursor IDE browser
             injects into the DOM for its inspector. Without this, React
-            flags them as SSR/CSR hydration mismatches in dev. Runs before
-            hydration (Next's `beforeInteractive` strategy) and stays
-            active via a MutationObserver so any re-injection after
-            hydration is silent too. No-op in real user browsers. */}
+            flags them as SSR/CSR hydration mismatches in dev. Runs
+            before hydration (Next's `beforeInteractive` strategy) and
+            keeps a MutationObserver active just through the hydration
+            window, then disconnects so the inspector can resume tagging
+            elements normally for the rest of the session. No-op in real
+            user browsers. */}
         <Script id="strip-cursor-refs" strategy="beforeInteractive">
-          {`(function(){try{var strip=function(r){if(r&&r.removeAttribute){r.removeAttribute('data-cursor-ref');}};document.querySelectorAll('[data-cursor-ref]').forEach(strip);var mo=new MutationObserver(function(muts){for(var i=0;i<muts.length;i++){var m=muts[i];if(m.type==='attributes'){strip(m.target);}else if(m.addedNodes){m.addedNodes.forEach(function(n){if(n.nodeType===1){strip(n);if(n.querySelectorAll){n.querySelectorAll('[data-cursor-ref]').forEach(strip);}}});}}});mo.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['data-cursor-ref']});}catch(e){}})();`}
+          {`(function(){try{var strip=function(r){if(r&&r.removeAttribute){r.removeAttribute('data-cursor-ref');}};document.querySelectorAll('[data-cursor-ref]').forEach(strip);var mo=new MutationObserver(function(muts){for(var i=0;i<muts.length;i++){var m=muts[i];if(m.type==='attributes'){strip(m.target);}else if(m.addedNodes){m.addedNodes.forEach(function(n){if(n.nodeType===1){strip(n);if(n.querySelectorAll){n.querySelectorAll('[data-cursor-ref]').forEach(strip);}}});}}});mo.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['data-cursor-ref']});var stop=function(){try{mo.disconnect();}catch(e){}};if(document.readyState==='complete'){setTimeout(stop,500);}else{window.addEventListener('load',function(){setTimeout(stop,500);});}}catch(e){}})();`}
         </Script>
         <SmoothScroll />
         <Header />

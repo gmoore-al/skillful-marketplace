@@ -69,8 +69,10 @@ export function Header() {
       }}
     >
       <div className="mx-auto flex w-full max-w-[1440px] items-center justify-between gap-4">
-        {/* Brand lockup — hammy + "hamstr" wordmark PNG with two baked
-            tones: black silhouette + white interior face details. */}
+        {/* Brand lockup — pink hammy face + multi-tone "hamstr"
+            wordmark PNG. Colours are baked into the asset (teal / coral
+            / red / yellow / blue / green letterforms) so it sits on any
+            section background. True RGBA with a clean alpha channel. */}
         <Link href="/" className="flex items-center" aria-label="Hamstr home">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -78,7 +80,7 @@ export function Header() {
             alt="Hamstr"
             style={{
               display: "block",
-              // 1024 × 180 native aspect → 5.69:1. Width clamps with
+              // 1665 × 293 native aspect → 5.68:1. Width clamps with
               // viewport so it reads on mobile without overwhelming
               // the nav.
               width: "clamp(11rem, 17vw, 15rem)",
