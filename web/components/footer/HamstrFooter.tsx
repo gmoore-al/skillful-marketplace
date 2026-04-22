@@ -34,7 +34,7 @@ export function HamstrFooter() {
               className="display-lg"
               style={{ color: "var(--cream)", maxWidth: "16ch" }}
             >
-              made in brooklyn,
+              made in canada,
               <br />
               <span style={{ color: "var(--mustard)" }}>for hamsters everywhere.</span>
             </h2>
@@ -74,7 +74,7 @@ export function HamstrFooter() {
             color: "color-mix(in srgb, var(--cream) 65%, transparent)",
           }}
         >
-          <span>© {new Date().getFullYear()} Hamstr · Brooklyn, NY</span>
+          <span>© {new Date().getFullYear()} Hamstr · Canada</span>
           <span>Drag the shapes below — they&apos;re bouncy.</span>
         </div>
       </div>

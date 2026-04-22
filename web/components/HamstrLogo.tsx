@@ -4,9 +4,8 @@ import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/gsap";
 
 /**
- * The Hamstr brand mark. Combines the uploaded PNG (the hamster peeking
- * over the wordmark) with a CSS multiply blend so the white background
- * disappears against any warm-toned section.
+ * The Hamstr brand mark. Uses the transparent hammy PNG so the logo
+ * sits cleanly on any section colour without needing a blend mode.
  *
  * The hamster wiggles gently on hover via GSAP — small delight, not
  * distracting.
@@ -54,11 +53,11 @@ export function HamstrLogo({
     /* eslint-disable-next-line @next/next/no-img-element */
     <img
       ref={ref}
-      src="/hamstr-logo.png"
+      src="/hammy.png"
       alt={alt}
       width={size}
       height={size}
-      className={`logo-blend block ${className}`}
+      className={`block ${className}`}
       style={{ width: size, height: "auto" }}
     />
   );

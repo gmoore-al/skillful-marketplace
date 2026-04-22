@@ -163,10 +163,9 @@ export function PageTransition() {
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/hamstr-logo.png"
+          src="/hammy.png"
           alt=""
           style={{ width: "70%", height: "auto" }}
-          className="logo-blend"
         />
       </div>
     </div>

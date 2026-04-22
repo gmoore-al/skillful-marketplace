@@ -27,7 +27,7 @@ const body = Inter({
 export const metadata: Metadata = {
   title: "Hamstr — soft landings for small lives",
   description:
-    "A gentle, story-driven marketplace for rehoming hamsters with care. Made in Brooklyn for hamsters everywhere.",
+    "A gentle, story-driven marketplace for rehoming hamsters with care. Made in Canada for hamsters everywhere.",
   openGraph: {
     title: "Hamstr — soft landings for small lives",
     description:

@@ -5,7 +5,6 @@ import { PillCTA } from "@/components/ui/PillCTA";
 import { RevealChars } from "@/components/motion/RevealChars";
 import { RevealUp } from "@/components/motion/RevealUp";
 import { CursorHamster } from "@/components/CursorHamster";
-import { Octagon } from "@/components/ui/Octagon";
 
 /**
  * Hero — Tesoro pattern: center-aligned, small intro stack at top, HUGE
@@ -39,7 +38,7 @@ export function Hero() {
       >
         <RevealUp className="flex flex-col items-center gap-5">
           <ConnectedPills
-            parts={["EST. BROOKLYN", "2019"]}
+            parts={["EST. CANADA", "2019"]}
             tones={["mustard", "ink"]}
           />
         </RevealUp>
@@ -70,36 +69,6 @@ export function Hero() {
             rehome yours
           </PillCTA>
         </RevealUp>
-
-        {/* Photo band — Tesoro hero has a graphic in an octagon/pill.
-            We use a row of three octagons in pale tones with hamster
-            emoji as placeholders. They sit BETWEEN the CTAs and the
-            big wordmark, no overlap. */}
-        <RevealUp delay={0.7} className="mt-2 w-full">
-          <div className="mx-auto flex w-full max-w-3xl items-center justify-center gap-3 sm:gap-5">
-            {[
-              { bg: "var(--peach-base)", emoji: "🌻", size: 96 },
-              { bg: "var(--mustard)", emoji: "🐹", size: 144 },
-              { bg: "var(--pink-base)", emoji: "🥜", size: 96 },
-            ].map((o, i) => (
-              <Octagon
-                key={i}
-                className="aspect-square shrink-0"
-                style={{
-                  background: o.bg,
-                  width: `clamp(${o.size * 0.55}px, ${o.size / 9}vw, ${o.size}px)`,
-                }}
-              >
-                <div
-                  className="flex h-full w-full items-center justify-center"
-                  style={{ fontSize: o.size * 0.55, lineHeight: 1 }}
-                >
-                  {o.emoji}
-                </div>
-              </Octagon>
-            ))}
-          </div>
-        </RevealUp>
       </div>
 
       {/* The HUGE wordmark — full-bleed across the bottom. Tesoro
@@ -108,26 +77,20 @@ export function Hero() {
           wide multi-stop brand gradient onto the letters and slowly
           drifts it horizontally for a living, breathing feel.
 
-          The word sits fully inside the hero; the next section
-          (FounderLetter / peach) is pulled up with a negative margin
-          to cover the bottom 15% of this wordmark. */}
-      <div
-        className="relative w-full overflow-hidden"
-        aria-hidden
+          The next section (FounderLetter / peach) is pulled up with a
+          negative margin to cover the bottom 15% of this wordmark. */}
+      <h2
+        className="display-xxl gradient-flow text-center leading-none"
+        style={{
+          fontSize: "clamp(5rem, 24vw, 22rem)",
+          letterSpacing: "-0.06em",
+          // Calmer, more hypnotic sweep — still visibly flowing but
+          // doesn't compete with the hero copy for attention.
+          ["--gradient-flow-duration" as string]: "24s",
+        }}
       >
-        <h2
-          className="display-xxl gradient-flow text-center leading-none"
-          style={{
-            fontSize: "clamp(5rem, 24vw, 22rem)",
-            letterSpacing: "-0.06em",
-            // Calmer, more hypnotic sweep — still visibly flowing but
-            // doesn't compete with the hero copy for attention.
-            ["--gradient-flow-duration" as string]: "24s",
-          }}
-        >
-          hamstr
-        </h2>
-      </div>
+        hamstr
+      </h2>
     </section>
   );
 }
