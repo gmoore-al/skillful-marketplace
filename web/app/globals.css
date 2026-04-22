@@ -1,60 +1,400 @@
 @import "tailwindcss";
 
-/* Hamstr palette — pulled from the logo:
- *   teal     #1f6e6a   (h)
- *   peach    #f6b39a   (a)
- *   mustard  #f3dc6e   (m)
- *   pink     #f6c4c1   (s)
- *   coral    #f08c70   (t)
- *   rose     #e76e70   (r)
- *   cream    #fbf6ee   (page background)
- *   ink      #1f2421   (body text)
+/* Hamstr palette — 5 colour families, each with 4 tones (base/light/main/dark)
+ * mirroring the Tesoro design system. Each section picks a `base` background
+ * and a `dark` text colour for the deep-on-pale colour-block storytelling.
+ *
+ * Brand mark colours (logo letters):
+ *   teal #1f6e6a · peach #f6b39a · mustard #f3dc6e · pink #f6c4c1
+ *   coral #f08c70 · rose #e76e70
  */
 :root {
-  --background: #fbf6ee;
-  --foreground: #1f2421;
-  --accent: #1f6e6a;
-  --muted: #6b7370;
-  --surface: #ffffff;
-  --border: #ece6d8;
+  /* TEAL family */
+  --teal-base: #d6efeb;     /* pale wash, used as section bg */
+  --teal-light: #99d6cf;    /* mid wash, used inside cards */
+  --teal: #1f6e6a;          /* the brand teal */
+  --teal-dark: #103432;     /* deep teal, for text-on-pale-teal */
 
-  --color-teal: #1f6e6a;
-  --color-peach: #f6b39a;
-  --color-mustard: #f3dc6e;
-  --color-pink: #f6c4c1;
-  --color-coral: #f08c70;
-  --color-rose: #e76e70;
+  /* PEACH / coral family */
+  --peach-base: #fde4d6;
+  --peach-light: #fbc8af;
+  --peach: #f6b39a;
+  --coral: #f08c70;
+  --coral-dark: #6f2a18;
+
+  /* MUSTARD family */
+  --mustard-base: #fdf3c4;
+  --mustard-light: #f7e58e;
+  --mustard: #f3dc6e;
+  --mustard-dark: #5b4a08;
+
+  /* PINK / rose family */
+  --pink-base: #fde2e0;
+  --pink-light: #fac3bf;
+  --pink: #f6c4c1;
+  --rose: #e76e70;
+  --rose-dark: #5e1f20;
+
+  /* CREAM / INK */
+  --cream: #fbf6ee;
+  --cream-deep: #f3ebda;
+  --ink: #1f2421;
+  --ink-soft: #4a534f;
+  --ink-mute: #6b7370;
+
+  /* Page defaults */
+  --background: var(--cream);
+  --foreground: var(--ink);
+
+  /* Section live tokens — each <SectionBlock> mutates these */
+  --section-bg: var(--cream);
+  --section-fg: var(--ink);
+
+  /* Site rhythm */
+  --site-gutter: clamp(1.25rem, 3vw, 2.5rem);
+  --site-edge: clamp(1.25rem, 4vw, 4rem);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-accent: var(--accent);
-  --color-muted: var(--muted);
-  --color-surface: var(--surface);
-  --color-border: var(--border);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #14191a;
-    --foreground: #f3eee2;
-    --accent: #4fb6af;
-    --muted: #a0a8a4;
-    --surface: #1c2222;
-    --border: #2a3231;
-  }
+  --color-teal: var(--teal);
+  --color-teal-base: var(--teal-base);
+  --color-teal-light: var(--teal-light);
+  --color-teal-dark: var(--teal-dark);
+  --color-peach: var(--peach);
+  --color-peach-base: var(--peach-base);
+  --color-coral: var(--coral);
+  --color-coral-dark: var(--coral-dark);
+  --color-mustard: var(--mustard);
+  --color-mustard-base: var(--mustard-base);
+  --color-mustard-dark: var(--mustard-dark);
+  --color-pink: var(--pink);
+  --color-pink-base: var(--pink-base);
+  --color-rose: var(--rose);
+  --color-rose-dark: var(--rose-dark);
+  --color-cream: var(--cream);
+  --color-cream-deep: var(--cream-deep);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
 }
 
 html,
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--cream);
+  color: var(--ink);
 }
 
 body {
-  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+  font-family: var(--font-body), system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Lenis smooth scroll */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* ─────────────────────────────────────────────
+   DISPLAY TYPE — Tesoro-scale, clamped between
+   320px and 1920px viewports. The display top
+   sits at ~10rem (≈160px) on huge displays.
+   ───────────────────────────────────────────── */
+.font-display {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 0.95;
+}
+
+.display-xxl {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 0.86;
+  font-size: clamp(3.5rem, 13vw, 10rem);
+}
+
+/* Animated multi-stop gradient that flows continuously across text.
+ * Tesoro pattern: paint a wide oversized gradient onto the text
+ * (background-clip: text + transparent fill) then translate the
+ * background-position so colours appear to drift through the letters.
+ *
+ * Usage: <h2 className="display-xxl gradient-flow">hamstr</h2>
+ *
+ * The stops repeat the first colour at the end of the gradient so the
+ * loop is seamless, and `background-size: 300% 100%` gives enough room
+ * for a full sweep over `--gradient-flow-duration`.
+ */
+.gradient-flow {
+  background-image: linear-gradient(
+    90deg,
+    var(--teal) 0%,
+    var(--mustard) 18%,
+    var(--coral) 36%,
+    var(--rose) 54%,
+    var(--teal) 72%,
+    var(--mustard) 90%,
+    var(--coral) 100%
+  );
+  background-size: 300% 100%;
+  background-repeat: repeat;
+  background-position: 0% 50%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  /* Slight padding so descenders aren't clipped by background-clip:text */
+  padding-bottom: 0.05em;
+  animation: gradient-flow var(--gradient-flow-duration, 9s) linear infinite;
+  will-change: background-position;
+}
+
+@keyframes gradient-flow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: -300% 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gradient-flow {
+    animation: none;
+    background-position: 50% 50%;
+  }
+}
+
+.display-xl {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 0.9;
+  font-size: clamp(2.75rem, 8.5vw, 7rem);
+}
+
+.display-lg {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+  font-size: clamp(2.25rem, 5.5vw, 4.5rem);
+}
+
+.display-md {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1;
+  font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+}
+
+.display-sm {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.1;
+  font-size: clamp(1.25rem, 1.8vw, 1.625rem);
+}
+
+.label-eyebrow {
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.body-lead {
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: clamp(1.0625rem, 1.4vw, 1.25rem);
+  line-height: 1.55;
+  font-weight: 400;
+}
+
+.body-main {
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: clamp(1rem, 1.1vw, 1.0625rem);
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+/* ─────────────────────────────────────────────
+   OCTAGON — clean Tesoro-style 8-sided clip
+   ───────────────────────────────────────────── */
+.clip-octagon {
+  clip-path: polygon(
+    29.29% 0%,
+    70.71% 0%,
+    100% 29.29%,
+    100% 70.71%,
+    70.71% 100%,
+    29.29% 100%,
+    0% 70.71%,
+    0% 29.29%
+  );
+}
+
+/* ─────────────────────────────────────────────
+   STICKER / CARD shadow
+   ───────────────────────────────────────────── */
+.sticker-shadow {
+  box-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.04),
+    0 8px 18px -8px rgba(31, 36, 33, 0.18),
+    0 2px 4px -2px rgba(31, 36, 33, 0.12);
+}
+
+.card-shadow {
+  box-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.04),
+    0 24px 40px -22px rgba(16, 52, 50, 0.22),
+    0 4px 12px -8px rgba(16, 52, 50, 0.18);
+}
+
+/* ─────────────────────────────────────────────
+   PILL CTA — large dark pill with circular icon
+   ───────────────────────────────────────────── */
+.pill-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.5rem 0.5rem 0.5rem 1.625rem;
+  background: var(--ink);
+  color: var(--cream);
+  border-radius: 9999px;
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.005em;
+  transition: transform 0.18s ease;
+  white-space: nowrap;
+  line-height: 1;
+}
+.pill-cta:hover {
+  transform: translateY(-1px);
+}
+.pill-cta__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 9999px;
+  background: var(--cream);
+  color: var(--ink);
+}
+
+/* ─────────────────────────────────────────────
+   CONNECTED PILLS — Tesoro's "FOR THE / MERCHANT"
+   pattern: two pills sitting next to each other,
+   nudged together so they share an "interlock".
+   ───────────────────────────────────────────── */
+.connected-pills {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  isolation: isolate;
+}
+.connected-pills > .cp-pill {
+  display: inline-flex;
+  align-items: center;
+  height: 2.25rem;
+  padding: 0 1rem;
+  border-radius: 9999px;
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.connected-pills > .cp-pill + .cp-pill {
+  margin-left: -0.625rem;
+}
+
+/* ─────────────────────────────────────────────
+   STAGE NUMBER — octagon with number inside
+   (Tesoro step indicator pattern)
+   ───────────────────────────────────────────── */
+.stage-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  font-family: var(--font-display), serif;
+  font-weight: 800;
+  font-size: 1.125rem;
+  letter-spacing: -0.02em;
+  clip-path: polygon(
+    29.29% 0%,
+    70.71% 0%,
+    100% 29.29%,
+    100% 70.71%,
+    70.71% 100%,
+    29.29% 100%,
+    0% 70.71%,
+    0% 29.29%
+  );
+}
+
+/* ─────────────────────────────────────────────
+   REVEAL CHARS — word-level masking. Each word
+   is its own inline-block with overflow:hidden;
+   chars stagger up from below their word's
+   bottom edge. This avoids the catastrophic
+   character-by-character line wrap we had
+   before.
+   ───────────────────────────────────────────── */
+.rc-word {
+  display: inline-block;
+  overflow: hidden;
+  padding-bottom: 0.18em;
+  margin-bottom: -0.18em;
+  vertical-align: top;
+}
+.rc-char {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+.rc-host {
+  display: block;
+}
+
+/* ─────────────────────────────────────────────
+   SOFT BLEND for the PNG logo
+   ───────────────────────────────────────────── */
+.logo-blend {
+  mix-blend-mode: multiply;
+}
+
+/* Section foreground utility */
+.section-text {
+  color: var(--section-fg);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html,
+  body {
+    scroll-behavior: auto !important;
+  }
+  .rc-char {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
