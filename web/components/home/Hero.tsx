@@ -106,7 +106,11 @@ export function Hero() {
           signature: brand wordmark scales with viewport so it dominates
           the hero edge-to-edge. The `gradient-flow` class paints a
           wide multi-stop brand gradient onto the letters and slowly
-          drifts it horizontally for a living, breathing feel. */}
+          drifts it horizontally for a living, breathing feel.
+
+          The word sits fully inside the hero; the next section
+          (FounderLetter / peach) is pulled up with a negative margin
+          to cover the bottom 15% of this wordmark. */}
       <div
         className="relative w-full overflow-hidden"
         aria-hidden
@@ -116,10 +120,9 @@ export function Hero() {
           style={{
             fontSize: "clamp(5rem, 24vw, 22rem)",
             letterSpacing: "-0.06em",
-            transform: "translateY(6%)",
-            // Faster sweep on the hero wordmark so the motion is
-            // immediately noticeable above the fold.
-            ["--gradient-flow-duration" as string]: "8s",
+            // Calmer, more hypnotic sweep — still visibly flowing but
+            // doesn't compete with the hero copy for attention.
+            ["--gradient-flow-duration" as string]: "24s",
           }}
         >
           hamstr

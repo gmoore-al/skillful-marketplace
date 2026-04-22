@@ -18,6 +18,11 @@ export function FounderLetter() {
       style={{
         background: "var(--peach-base)",
         color: "var(--coral-dark)",
+        // Pull the section up so the peach covers the bottom ~15% of
+        // the hero's giant "hamstr" wordmark. The pull matches 15% of
+        // the wordmark's font-size clamp in Hero.tsx.
+        marginTop: "calc(-1 * clamp(0.75rem, 3.6vw, 3.3rem))",
+        zIndex: 1,
       }}
     >
       <div
